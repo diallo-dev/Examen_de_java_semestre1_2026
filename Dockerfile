@@ -15,8 +15,13 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out .
 
-# Render utilise la variable d'environnement PORT, on force l'écoute sur 0.0.0.0
+# --- CORRECTION POUR RENDER (STATUS 139) ---
+# Désactive les outils de diagnostic qui causent souvent des Segmentation Faults sur Render
+ENV DOTNET_EnableDiagnostics=0
+# Force l'écoute sur le port 10000 requis par Render
 ENV ASPNETCORE_URLS=http://+:10000
+# -------------------------------------------
+
 EXPOSE 10000
 
 ENTRYPOINT ["dotnet", "BrasilBurger.Web.dll"]
