@@ -15,12 +15,12 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out .
 
-# --- CORRECTION POUR RENDER (STATUS 139) ---
-# Désactive les outils de diagnostic qui causent souvent des Segmentation Faults sur Render
+# Désactiver les diagnostics (évite status 139)
 ENV DOTNET_EnableDiagnostics=0
-# Force l'écoute sur le port 10000 requis par Render
+ENV DOTNET_EnableEventPipe=0
+
+# Port 10000 requis par Render
 ENV ASPNETCORE_URLS=http://+:10000
-# -------------------------------------------
 
 EXPOSE 10000
 
