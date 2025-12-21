@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Brasil Burger</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="/">
+                    <i class="fas fa-burger"></i> BRASIL BURGER
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Catalogue">Notre Carte</a>
+                        </li>
+                        @if (Context.Session.GetInt32("ClientId").HasValue)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Commande/MesCommandes">Mes Commandes</a>
+                            </li>
+                            <li class="nav-item">
+                                <span class="nav-link text-white">
+                                    <i class="fas fa-user"></i> @Context.Session.GetString("ClientNom")
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Auth/Deconnexion">Déconnexion</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Auth/Connexion">Connexion</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Auth/Inscription">Inscription</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="/Commande/Panier">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge bg-warning text-dark" id="panier-count">0</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <div class="container">
+            <p>&copy; 2025 Brasil Burger - Tous droits réservés</p>
+            <p>
+                <i class="fas fa-phone"></i> +221 77 123 45 67 | 
+                <i class="fas fa-envelope"></i> contact@brasilburger.sn
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

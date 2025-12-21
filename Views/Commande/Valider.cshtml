@@ -1,0 +1,112 @@
+@model ValiderCommandeViewModel
+@{
+    ViewData["Title"] = "Valider ma commande";
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">
+        <i class="fas fa-check-circle"></i> Valider ma commande
+    </h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="fas fa-shopping-bag"></i> Récapitulatif</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var item in Model.Panier.Items)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>@item.Nom x @item.Quantite</span>
+                            <strong>@item.Total FCFA</strong>
+                        </div>
+                    }
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h5>Total :</h5>
+                        <h5 class="text-danger">@Model.Panier.Total FCFA</h5>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" action="/Commande/Confirmer">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5><i class="fas fa-map-marker-alt"></i> Mode de consommation</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="LieuConsommation" 
+                                   value="SurPlace" id="surplace" checked>
+                            <label class="form-check-label" for="surplace">
+                                <strong>Sur place</strong> - Consommer au restaurant
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="LieuConsommation" 
+                                   value="Emporter" id="emporter">
+                            <label class="form-check-label" for="emporter">
+                                <strong>À emporter</strong> - Récupérer la commande
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="LieuConsommation" 
+                                   value="Livraison" id="livraison">
+                            <label class="form-check-label" for="livraison">
+                                <strong>Livraison</strong> - Se faire livrer
+                            </label>
+                        </div>
+
+                        <div id="adresse-livraison" style="display: none;">
+                            <label class="form-label">Adresse de livraison</label>
+                            <input type="text" name="AdresseLivraison" class="form-control" 
+                                   placeholder="Entrez votre adresse complète">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-danger btn-lg w-100 mt-4">
+                    <i class="fas fa-arrow-right"></i> Confirmer et payer
+                </button>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Informations</h5>
+                    <hr>
+                    <p><i class="fas fa-clock"></i> <strong>Délai :</strong></p>
+                    <ul>
+                        <li>Sur place : 15-20 min</li>
+                        <li>À emporter : 20-25 min</li>
+                        <li>Livraison : 30-45 min</li>
+                    </ul>
+                    <p><i class="fas fa-credit-card"></i> <strong>Paiement :</strong></p>
+                    <ul>
+                        <li>Wave</li>
+                        <li>Orange Money</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('input[name="LieuConsommation"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const adresseDiv = document.getElementById('adresse-livraison');
+                if (this.value === 'Livraison') {
+                    adresseDiv.style.display = 'block';
+                } else {
+                    adresseDiv.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

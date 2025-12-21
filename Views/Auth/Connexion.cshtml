@@ -1,0 +1,56 @@
+@model ConnexionViewModel
+@{
+    ViewData["Title"] = "Connexion";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white text-center">
+                    <h3><i class="fas fa-sign-in-alt"></i> Connexion</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" asp-action="Connexion">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="Email" class="form-control" required 
+                                   placeholder="votre@email.com">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mot de passe</label>
+                            <input type="password" name="MotDePasse" class="form-control" required>
+                        </div>
+
+                        @if (ViewData.ModelState.ErrorCount > 0)
+                        {
+                            <div class="alert alert-danger">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <div>@error.ErrorMessage</div>
+                                }
+                            </div>
+                        }
+
+                        <button type="submit" class="btn btn-danger btn-lg w-100">
+                            <i class="fas fa-sign-in-alt"></i> Se connecter
+                        </button>
+                    </form>
+
+                    <hr>
+                    <p class="text-center">
+                        Pas encore de compte ? 
+                        <a href="/Auth/Inscription" class="text-danger fw-bold">S'inscrire</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="/Catalogue" class="text-muted">
+                    <i class="fas fa-arrow-left"></i> Continuer sans se connecter
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

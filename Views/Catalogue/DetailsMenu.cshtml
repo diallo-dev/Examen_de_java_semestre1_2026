@@ -1,0 +1,64 @@
+@model DetailsViewModel
+@{
+    ViewData["Title"] = Model.Menu?.Nom;
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.Menu?.UrlImage))
+            {
+                <img src="@Model.Menu.UrlImage" class="img-fluid rounded shadow" alt="@Model.Menu.Nom">
+            }
+            else
+            {
+                <div class="bg-warning text-dark d-flex align-items-center justify-content-center rounded" style="height: 400px;">
+                    <i class="fas fa-utensils fa-10x"></i>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <span class="badge bg-warning text-dark mb-2">MENU COMPLET</span>
+            <h1 class="display-4">@Model.Menu?.Nom</h1>
+            <p class="lead text-muted">@Model.Menu?.Description</p>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Contenu du menu :</h5>
+                    <ul class="list-unstyled">
+                        @if (Model.Menu?.Burger != null)
+                        {
+                            <li><i class="fas fa-check text-success"></i> <strong>Burger :</strong> @Model.Menu.Burger.Nom</li>
+                        }
+                        @if (Model.Menu?.Complements != null && Model.Menu.Complements.Any())
+                        {
+                            foreach (var complement in Model.Menu.Complements)
+                            {
+                                <li><i class="fas fa-check text-success"></i> @complement.Nom</li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <h2 class="text-danger">@Model.Menu?.PrixTotal FCFA</h2>
+
+            <form method="post" action="/Commande/AjouterMenu">
+                <input type="hidden" name="id" value="@Model.Menu?.Id" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Quantité</label>
+                    <input type="number" name="quantite" class="form-control" value="1" min="1" max="10">
+                </div>
+
+                <button type="submit" class="btn btn-warning btn-lg w-100">
+                    <i class="fas fa-shopping-cart"></i> Ajouter au panier
+                </button>
+            </form>
+
+            <a href="/Catalogue" class="btn btn-outline-secondary mt-3 w-100">
+                <i class="fas fa-arrow-left"></i> Retour au catalogue
+            </a>
+        </div>
+    </div>
+</div>
