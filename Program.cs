@@ -12,10 +12,13 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- AJOUT POUR RENDER : FORCE L'ÉCOUTE SUR LE PORT 10000 ---
-var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
-builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
-// ---------------------------------------------------------
+// --- 🛠 CORRECTION CRUCIALE POUR RENDER ---
+// On force Kestrel à écouter sur toutes les IPs (0.0.0.0) et sur le port 10000
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(10000);
+});
+// ------------------------------------------
 
 // Configuration PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -34,7 +37,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Injection de dépendances (Gardé tel quel)
+// Injection de dépendances
 builder.Services.AddScoped<IBurgerRepository, BurgerRepository>();
 builder.Services.AddScoped<IComplementRepository, ComplementRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
