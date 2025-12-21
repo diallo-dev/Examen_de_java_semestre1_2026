@@ -7,12 +7,17 @@ using BrasilBurger.Web.Repository.Impl;
 using BrasilBurger.Web.Service;
 using BrasilBurger.Web.Service.Impl;
 
-// ✅ Correction pour les dates PostgreSQL (à mettre avant builder)
+// ✅ Correction pour les dates PostgreSQL
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuration PostgreSQL avec Mapping d'Enum (NET 8)
+// --- AJOUT POUR RENDER : FORCE L'ÉCOUTE SUR LE PORT 10000 ---
+var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+// ---------------------------------------------------------
+
+// Configuration PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
 dataSourceBuilder.MapEnum<EtatStockEnum>("etatstock"); 
@@ -29,7 +34,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Injection de dépendances
+// Injection de dépendances (Gardé tel quel)
 builder.Services.AddScoped<IBurgerRepository, BurgerRepository>();
 builder.Services.AddScoped<IComplementRepository, ComplementRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
@@ -49,11 +54,10 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-app.UseDeveloperExceptionPage();
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
 
 app.UseStaticFiles();
