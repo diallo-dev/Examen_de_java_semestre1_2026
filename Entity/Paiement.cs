@@ -12,7 +12,7 @@ namespace BrasilBurger.Web.Entity
 
         public Paiement()
         {
-            // ✅ Utilisation de UtcNow pour PostgreSQL
+            
             Date = DateTime.UtcNow;
         }
 

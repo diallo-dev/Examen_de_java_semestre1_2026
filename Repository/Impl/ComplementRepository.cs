@@ -17,7 +17,7 @@ namespace BrasilBurger.Web.Repository.Impl
         {
             _context.Complements.Add(complement);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"✅ Complément créé avec l'ID : {complement.Id}");
+            Console.WriteLine($" Complément créé avec l'ID : {complement.Id}");
             return complement;
         }
 

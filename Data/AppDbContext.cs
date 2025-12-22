@@ -10,7 +10,7 @@ namespace BrasilBurger.Web.Data
         {
         }
 
-        // DbSets (Tables)
+        
         public DbSet<Burger> Burgers { get; set; }
         public DbSet<Complement> Complements { get; set; }
         public DbSet<Menu> Menus { get; set; }
@@ -26,10 +26,10 @@ namespace BrasilBurger.Web.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1. Déclaration de l'Enum PostgreSQL
+            
             modelBuilder.HasPostgresEnum<EtatStockEnum>("etatstock");
 
-            // 🔹 Table : burger
+            
             modelBuilder.Entity<Burger>(entity =>
             {
                 entity.ToTable("burger");
@@ -42,7 +42,7 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.EtatStock).HasColumnName("etatstock");
             });
 
-            // 🔹 Table : complement
+            
             modelBuilder.Entity<Complement>(entity =>
             {
                 entity.ToTable("complement");
@@ -54,7 +54,7 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.EtatStock).HasColumnName("etatstock");
             });
 
-            // 🔹 Table : menu
+            
             modelBuilder.Entity<Menu>(entity =>
             {
                 entity.ToTable("menu");
@@ -66,12 +66,12 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.PrixTotal).HasColumnName("prix_total");
                 entity.Property(e => e.EtatStock).HasColumnName("etatstock");
                 
-                // Ignorer les propriétés calculées en C# qui ne sont pas des colonnes simples
+               
                 entity.Ignore(e => e.Burger);
                 entity.Ignore(e => e.Complements);
             });
 
-            // 🔹 Table : client
+            
             modelBuilder.Entity<Client>(entity =>
             {
                 entity.ToTable("client");
@@ -86,7 +86,7 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.MotDePasse).HasColumnName("mot_de_passe");
             });
 
-            // 🔹 Table : commande
+            
             modelBuilder.Entity<Commande>(entity =>
             {
                 entity.ToTable("commande");
@@ -102,14 +102,14 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.IdLivreur).HasColumnName("id_livreur");
                 entity.Property(e => e.IdZone).HasColumnName("id_zone");
 
-                // Relation avec le Client
+               
                 entity.HasOne(e => e.Client).WithMany().HasForeignKey(e => e.IdClient);
                 
                 entity.Ignore(e => e.CommandeBurgers);
                 entity.Ignore(e => e.CommandeMenus);
             });
 
-            // 🔹 Table : commande_burger
+            
             modelBuilder.Entity<CommandeBurger>(entity =>
             {
                 entity.ToTable("commande_burger");
@@ -122,7 +122,7 @@ namespace BrasilBurger.Web.Data
                 entity.Ignore(e => e.Burger);
             });
 
-            // 🔹 Table : commande_menu
+            
             modelBuilder.Entity<CommandeMenu>(entity =>
             {
                 entity.ToTable("commande_menu");
@@ -135,7 +135,7 @@ namespace BrasilBurger.Web.Data
                 entity.Ignore(e => e.Menu);
             });
 
-            // 🔹 Table : paiement
+            
             modelBuilder.Entity<Paiement>(entity =>
             {
                 entity.ToTable("paiement");
@@ -148,7 +148,7 @@ namespace BrasilBurger.Web.Data
                 entity.Ignore(e => e.Commande);
             });
 
-            // 🔹 Table : menu_burger
+            
             modelBuilder.Entity<MenuBurger>(entity =>
             {
                 entity.ToTable("menu_burger");
@@ -159,7 +159,7 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.Quantite).HasColumnName("quantite");
             });
 
-            // 🔹 Table : menu_complement
+            
             modelBuilder.Entity<MenuComplement>(entity =>
             {
                 entity.ToTable("menu_complement");

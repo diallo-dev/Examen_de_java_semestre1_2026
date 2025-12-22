@@ -7,20 +7,18 @@ using BrasilBurger.Web.Repository.Impl;
 using BrasilBurger.Web.Service;
 using BrasilBurger.Web.Service.Impl;
 
-// ✅ Correction pour les dates PostgreSQL
+
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 🛠 CORRECTION CRUCIALE POUR RENDER ---
-// On force Kestrel à écouter sur toutes les IPs (0.0.0.0) et sur le port 10000
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(10000);
 });
-// ------------------------------------------
 
-// Configuration PostgreSQL
+
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
 dataSourceBuilder.MapEnum<EtatStockEnum>("etatstock"); 
@@ -29,7 +27,7 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(dataSource));
 
-// Configuration Session
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -37,7 +35,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Injection de dépendances
+
 builder.Services.AddScoped<IBurgerRepository, BurgerRepository>();
 builder.Services.AddScoped<IComplementRepository, ComplementRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();

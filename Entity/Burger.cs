@@ -9,7 +9,7 @@ namespace BrasilBurger.Web.Entity
         public string? Description { get; set; }
         public EtatStockEnum EtatStock { get; set; }
 
-        // Constructeur
+        
         public Burger()
         {
             EtatStock = EtatStockEnum.disponible;

@@ -14,7 +14,7 @@ namespace BrasilBurger.Web.Service.Impl
 
         public async Task<Client> InscrireAsync(Client client, string motDePasse)
         {
-            // Hash du mot de passe
+            
             client.MotDePasse = BCrypt.Net.BCrypt.HashPassword(motDePasse);
             return await _repository.CreerAsync(client);
         }

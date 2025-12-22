@@ -9,7 +9,7 @@ namespace BrasilBurger.Web.Entity
         public double PrixTotal { get; set; }
         public EtatStockEnum EtatStock { get; set; }
 
-        // Relations
+        
         public Burger? Burger { get; set; }
         public List<Complement> Complements { get; set; }
 
