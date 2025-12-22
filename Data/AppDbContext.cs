@@ -116,7 +116,7 @@ namespace BrasilBurger.Web.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.IdCommande).HasColumnName("id_commande");
-                entity.Property(e => e.IdBurger).HasColumnName("id_burger");
+                entity.Property(e => e.BurgerId).HasColumnName("id_burger");
                 entity.Property(e => e.Quantite).HasColumnName("quantite");
                 entity.Property(e => e.PrixUnitaire).HasColumnName("prix_unitaire");
                 entity.Ignore(e => e.Burger);
@@ -129,7 +129,7 @@ namespace BrasilBurger.Web.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.IdCommande).HasColumnName("id_commande");
-                entity.Property(e => e.IdMenu).HasColumnName("id_menu");
+                entity.Property(e => e.MenuId).HasColumnName("id_menu");
                 entity.Property(e => e.Quantite).HasColumnName("quantite");
                 entity.Property(e => e.PrixUnitaire).HasColumnName("prix_unitaire");
                 entity.Ignore(e => e.Menu);
@@ -154,8 +154,8 @@ namespace BrasilBurger.Web.Data
                 entity.ToTable("menu_burger");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.IdMenu).HasColumnName("id_menu");
-                entity.Property(e => e.IdBurger).HasColumnName("id_burger");
+                entity.Property(e => e.MenuId).HasColumnName("id_menu");
+                entity.Property(e => e.BurgerId).HasColumnName("id_burger");
                 entity.Property(e => e.Quantite).HasColumnName("quantite");
             });
 
@@ -165,10 +165,9 @@ namespace BrasilBurger.Web.Data
                 entity.ToTable("menu_complement");
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.IdMenu).HasColumnName("id_menu");
-                entity.Property(e => e.IdComplement).HasColumnName("id_complement");
+                entity.Property(e => e.MenuId).HasColumnName("id_menu");
+                entity.Property(e => e.ComplementId).HasColumnName("id_complement");
                 entity.Property(e => e.Quantite).HasColumnName("quantite");
             });
         }
-    }
 }

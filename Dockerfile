@@ -8,7 +8,7 @@ RUN dotnet restore
 
 # Copier le reste et publier
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish BrasilBurger.Web.csproj -c Release -o out
 
 # Étape finale : Image de runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0

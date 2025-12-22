@@ -41,7 +41,7 @@ namespace BrasilBurger.Web.Entity
     {
         public int Id { get; set; }
         public int IdCommande { get; set; }
-        public int IdBurger { get; set; }
+        public int BurgerId { get; set; }
         public int Quantite { get; set; }
         public double PrixUnitaire { get; set; }
         public Burger? Burger { get; set; }
@@ -51,7 +51,7 @@ namespace BrasilBurger.Web.Entity
     {
         public int Id { get; set; }
         public int IdCommande { get; set; }
-        public int IdMenu { get; set; }
+        public int MenuId { get; set; }
         public int Quantite { get; set; }
         public double PrixUnitaire { get; set; }
         public Menu? Menu { get; set; }
