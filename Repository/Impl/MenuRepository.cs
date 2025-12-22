@@ -24,33 +24,35 @@ namespace BrasilBurger.Web.Repository.Impl
 
                 int menuId = menu.Id;
 
-                // Association burger
+               
                 if (menu.Burger != null)
                 {
                     await _context.Database.ExecuteSqlRawAsync(
-                        "INSERT INTO menu_burger (id_menu, id_burger, quantite) VALUES ({0}, {1}, {2})",
+                        "INSERT INTO menu_burger (menu_id, burger_id, quantite) VALUES ({0}, {1}, {2})",
                         menuId, menu.Burger.Id, 1
                     );
                 }
 
-                // Association compléments
+                
                 if (menu.Complements != null && menu.Complements.Any())
                 {
                     foreach (var complement in menu.Complements)
                     {
                         await _context.Database.ExecuteSqlRawAsync(
-                            "INSERT INTO menu_complement (id_menu, id_complement, quantite) VALUES ({0}, {1}, {2})",
+                            "INSERT INTO menu_complement (menu_id, complement_id, quantite) VALUES ({0}, {1}, {2})",
                             menuId, complement.Id, 1
                         );
                     }
                 }
 
                 await transaction.CommitAsync();
+                Console.WriteLine($" Menu créé avec l'ID : {menuId}");
                 return menu;
             }
-            catch
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
+                Console.WriteLine($" Erreur création menu: {ex.Message}");
                 throw;
             }
         }
@@ -83,12 +85,12 @@ namespace BrasilBurger.Web.Repository.Impl
 
         public async Task<List<Menu>> ListerParEtatAsync(string etat)
         {
-            // Convert string to enum C# (ignore case)
+            
             if (!Enum.TryParse<EtatStockEnum>(etat, true, out var etatEnum))
                 return new List<Menu>();
 
             var menus = await _context.Menus
-                .Where(m => m.EtatStock == etatEnum)  // comparer enum avec enum
+                .Where(m => m.EtatStock == etatEnum)
                 .OrderBy(m => m.Id)
                 .ToListAsync();
 
@@ -104,8 +106,8 @@ namespace BrasilBurger.Web.Repository.Impl
         public async Task<Burger?> GetBurgerByMenuIdAsync(int menuId)
         {
             var burgerId = await _context.MenuBurgers
-                .Where(mb => mb.IdMenu == menuId)
-                .Select(mb => mb.IdBurger)
+                .Where(mb => mb.MenuId == menuId)
+                .Select(mb => mb.BurgerId)
                 .FirstOrDefaultAsync();
 
             if (burgerId != 0)
@@ -117,8 +119,8 @@ namespace BrasilBurger.Web.Repository.Impl
         public async Task<List<Complement>> GetComplementsByMenuIdAsync(int menuId)
         {
             var complementIds = await _context.MenuComplements
-                .Where(mc => mc.IdMenu == menuId)
-                .Select(mc => mc.IdComplement)
+                .Where(mc => mc.MenuId == menuId)
+                .Select(mc => mc.ComplementId)
                 .ToListAsync();
 
             if (!complementIds.Any())
