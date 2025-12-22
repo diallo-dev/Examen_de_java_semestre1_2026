@@ -169,5 +169,5 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.ComplementId).HasColumnName("id_complement");
                 entity.Property(e => e.Quantite).HasColumnName("quantite");
             });
-        }
+    }   }
 }
