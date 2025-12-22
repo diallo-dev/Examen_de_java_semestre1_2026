@@ -181,7 +181,7 @@ namespace BrasilBurger.Web.Controllers
                 {
                     commande.CommandeMenus.Add(new CommandeMenu
                     {
-                        BurgerId = item.Id,
+                        MenuId = item.Id,
                         Quantite = item.Quantite,
                         PrixUnitaire = item.Prix
                     });
