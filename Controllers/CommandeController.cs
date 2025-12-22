@@ -172,7 +172,7 @@ namespace BrasilBurger.Web.Controllers
                 {
                     commande.CommandeBurgers.Add(new CommandeBurger
                     {
-                        IdBurger = item.Id,
+                        BurgerId = item.Id,
                         Quantite = item.Quantite,
                         PrixUnitaire = item.Prix
                     });
@@ -181,7 +181,7 @@ namespace BrasilBurger.Web.Controllers
                 {
                     commande.CommandeMenus.Add(new CommandeMenu
                     {
-                        IdMenu = item.Id,
+                        BurgerId = item.Id,
                         Quantite = item.Quantite,
                         PrixUnitaire = item.Prix
                     });
