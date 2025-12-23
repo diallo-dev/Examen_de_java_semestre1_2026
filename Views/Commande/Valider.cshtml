@@ -4,97 +4,146 @@
 }
 
 <div class="container my-5">
-    <h1 class="text-center mb-4">
-        <i class="fas fa-check-circle"></i> Valider ma commande
-    </h1>
+    <div class="d-flex align-items-center mb-5">
+        <h1 class="fw-bold text-primary-green mb-0">
+            <i class="fas fa-clipboard-check me-2"></i> Finaliser ma commande
+        </h1>
+        <div class="ms-3 flex-grow-1 border-bottom border-2" style="opacity: 0.1;"></div>
+    </div>
 
     <div class="row">
         <div class="col-md-8">
-            <div class="card mb-4">
-                <div class="card-header bg-danger text-white">
-                    <h5><i class="fas fa-shopping-bag"></i> Récapitulatif</h5>
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 20px;">
+                <div class="card-header bg-primary-green py-3">
+                    <h5 class="mb-0 text-white"><i class="fas fa-shopping-bag me-2"></i> Votre sélection</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     @foreach (var item in Model.Panier.Items)
                     {
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>@item.Nom x @item.Quantite</span>
-                            <strong>@item.Total FCFA</strong>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="fw-bold text-primary-green">@item.Quantite x</span> 
+                                <span class="text-dark">@item.Nom</span>
+                            </div>
+                            <span class="fw-bold">@item.Total FCFA</span>
                         </div>
                     }
-                    <hr>
-                    <div class="d-flex justify-content-between">
-                        <h5>Total :</h5>
-                        <h5 class="text-danger">@Model.Panier.Total FCFA</h5>
+                    <hr class="border-dashed">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="fw-bold mb-0">Total à payer :</h4>
+                        <div class="price-tag fs-3 border-0 shadow-none bg-transparent py-0">
+                            @Model.Panier.Total <small class="fs-6">FCFA</small>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <form method="post" action="/Commande/Confirmer">
-                <div class="card">
-                    <div class="card-header bg-danger text-white">
-                        <h5><i class="fas fa-map-marker-alt"></i> Mode de consommation</h5>
+                <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                    <div class="card-header bg-primary-green py-3">
+                        <h5 class="mb-0 text-white"><i class="fas fa-map-marker-alt me-2"></i> Où allez-vous déguster ?</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="LieuConsommation" 
-                                   value="SurPlace" id="surplace" checked>
-                            <label class="form-check-label" for="surplace">
-                                <strong>Sur place</strong> - Consommer au restaurant
-                            </label>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <input class="form-check-input d-none" type="radio" name="LieuConsommation" 
+                                       value="SurPlace" id="surplace" checked>
+                                <label class="option-card w-100 text-center p-3 border rounded-4 cursor-pointer transition-all" for="surplace">
+                                    <i class="fas fa-chair fa-2x mb-2 d-block"></i>
+                                    <strong>Sur place</strong>
+                                </label>
+                            </div>
+
+                            <div class="col-md-4">
+                                <input class="form-check-input d-none" type="radio" name="LieuConsommation" 
+                                       value="Emporter" id="emporter">
+                                <label class="option-card w-100 text-center p-3 border rounded-4 cursor-pointer transition-all" for="emporter">
+                                    <i class="fas fa-running fa-2x mb-2 d-block"></i>
+                                    <strong>À emporter</strong>
+                                </label>
+                            </div>
+
+                            <div class="col-md-4">
+                                <input class="form-check-input d-none" type="radio" name="LieuConsommation" 
+                                       value="Livraison" id="livraison">
+                                <label class="option-card w-100 text-center p-3 border rounded-4 cursor-pointer transition-all" for="livraison">
+                                    <i class="fas fa-motorcycle fa-2x mb-2 d-block"></i>
+                                    <strong>Livraison</strong>
+                                </label>
+                            </div>
                         </div>
 
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="LieuConsommation" 
-                                   value="Emporter" id="emporter">
-                            <label class="form-check-label" for="emporter">
-                                <strong>À emporter</strong> - Récupérer la commande
-                            </label>
-                        </div>
-
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="radio" name="LieuConsommation" 
-                                   value="Livraison" id="livraison">
-                            <label class="form-check-label" for="livraison">
-                                <strong>Livraison</strong> - Se faire livrer
-                            </label>
-                        </div>
-
-                        <div id="adresse-livraison" style="display: none;">
-                            <label class="form-label">Adresse de livraison</label>
-                            <input type="text" name="AdresseLivraison" class="form-control" 
-                                   placeholder="Entrez votre adresse complète">
+                        <div id="adresse-livraison" class="mt-4 animate__animated animate__fadeIn" style="display: none;">
+                            <label class="form-label fw-bold text-primary-green">Adresse exacte de livraison</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-map-pin text-accent-gold"></i></span>
+                                <input type="text" name="AdresseLivraison" class="form-control border-start-0 ps-0" 
+                                       placeholder="Quartier, Rue, Immeuble, Appartement...">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-danger btn-lg w-100 mt-4">
-                    <i class="fas fa-arrow-right"></i> Confirmer et payer
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-4 py-3 shadow">
+                    <i class="fas fa-credit-card me-2"></i> ÉTAPE SUIVANTE : PAIEMENT
                 </button>
             </form>
         </div>
 
         <div class="col-md-4">
-            <div class="card bg-light">
-                <div class="card-body">
-                    <h5 class="card-title">Informations</h5>
-                    <hr>
-                    <p><i class="fas fa-clock"></i> <strong>Délai :</strong></p>
-                    <ul>
-                        <li>Sur place : 15-20 min</li>
-                        <li>À emporter : 20-25 min</li>
-                        <li>Livraison : 30-45 min</li>
-                    </ul>
-                    <p><i class="fas fa-credit-card"></i> <strong>Paiement :</strong></p>
-                    <ul>
-                        <li>Wave</li>
-                        <li>Orange Money</li>
-                    </ul>
+            <div class="card border-0 shadow-sm bg-light-green mb-4" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-primary-green border-bottom pb-2 mb-3">Informations utiles</h5>
+                    
+                    <div class="mb-4">
+                        <p class="small text-uppercase fw-bold text-muted mb-2"><i class="fas fa-clock text-accent-gold"></i> Temps estimé</p>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-1">🔹 Sur place : <span class="fw-bold">15-20 min</span></li>
+                            <li class="mb-1">🔹 À emporter : <span class="fw-bold">20-25 min</span></li>
+                            <li>🔹 Livraison : <span class="fw-bold">30-45 min</span></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <p class="small text-uppercase fw-bold text-muted mb-2"><i class="fas fa-shield-alt text-accent-gold"></i> Paiements acceptés</p>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-white text-primary border px-3 py-2 text-dark">Wave</span>
+                            <span class="badge bg-white text-warning border px-3 py-2 text-dark">Orange Money</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
+            <a href="/Commande/Panier" class="btn btn-outline-secondary w-100 border-2">
+                <i class="fas fa-arrow-left"></i> Retour au panier
+            </a>
         </div>
     </div>
 </div>
+
+<style>
+    .cursor-pointer { cursor: pointer; }
+    .transition-all { transition: all 0.2s ease; }
+    .border-dashed { border-style: dashed !important; }
+    
+    .option-card {
+        color: var(--muted-text);
+        background: white;
+    }
+
+    .option-card:hover {
+        border-color: var(--accent-gold) !important;
+        background: #fdfcf9;
+    }
+
+    input[name="LieuConsommation"]:checked + .option-card {
+        border-color: var(--primary-green) !important;
+        border-width: 2px !important;
+        background-color: var(--primary-green) !important;
+        color: white !important;
+        box-shadow: 0 5px 15px rgba(26, 48, 18, 0.2);
+    }
+</style>
 
 @section Scripts {
     <script>

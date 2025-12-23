@@ -1,19 +1,16 @@
 :root {
-    /* Palette de couleurs plus riche et gastronomique */
-    --primary-green: #1b330c;    /* Vert forêt profond (Luxe/Nature) */
-    --secondary-green: #3d6325;  /* Vert olive dynamique */
-    --accent-gold: #c5a059;      /* Or brossé */
-    --accent-light: #e9d7b3;     /* Sable doux */
-    --light-bg: #fdfdfb;         /* Blanc cassé pour éviter la fatigue visuelle */
-    --dark-text: #1a1a1a;
-    --muted-text: #64748b;
-    --border-color: #f1f5f9;
-    --shadow: 0 10px 30px rgba(27, 51, 12, 0.05);
-    --shadow-hover: 0 20px 40px rgba(27, 51, 12, 0.12);
-    --success-green: #10b981;
-    --warning-gold: #f59e0b;
-    --radius-lg: 24px;
-    --radius-md: 16px;
+    /* Palette Gastronomique : Vert Profond, Jaune Ambré et Anthracite */
+    --primary-green: #1a3012;    
+    
+    --secondary-green: #2d5a27;  
+    
+    --accent-yellow: #ffc107;    /* Jaune vif (Énergie) */
+    --accent-gold: #d4a574;      /* Or brossé (Élégance) */
+    --dark-charcoal: #121212;    /* Noir charbon pour les textes */
+    --light-bg: #fdfdfb;         /* Blanc crème */
+    --border-color: #e9ecef;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 * {
@@ -23,57 +20,69 @@
 }
 
 body {
-    /* Utilisation de polices système plus élégantes ou importer 'Playfair Display' pour les titres si possible */
-    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
     background-color: var(--light-bg);
-    color: var(--dark-text);
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
+    color: var(--dark-charcoal);
+    line-height: 1.6;
 }
 
-/* --- NAVBAR PROFESSIONNELLE --- */
+main {
+    flex: 1;
+    padding-bottom: 3rem;
+}
+
+
+
 .bg-primary-green {
-    background: rgba(27, 51, 12, 0.95) !important;
-    backdrop-filter: blur(10px); /* Effet flou moderne */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(26, 48, 18, 0.98) !important;
+    backdrop-filter: blur(8px);
+    border-bottom: 2px solid var(--accent-gold);
 }
 
 .navbar-brand {
-    font-family: 'Georgia', serif; /* Un peu de serif pour le prestige */
     font-weight: 800;
-    font-size: 1.8rem;
-    color: var(--accent-gold) !important;
+    font-size: 1.7rem;
+    color: var(--accent-yellow) !important;
+    letter-spacing: -1px;
 }
 
 .navbar-dark .navbar-nav .nav-link {
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    margin: 0 5px;
+    color: #fff !important;
+    font-weight: 500;
+    transition: 0.3s;
 }
 
-/* --- HERO SECTION GASTRONOMIQUE --- */
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--accent-yellow) !important;
+}
+
+
+
 .hero-section {
-    padding: 8rem 0;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                url('https://images.unsplash.com/photo-1514356020566-35c67c8f13c1?q=80&w=2000') center/cover;
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
     color: white;
-    margin-bottom: 4rem;
+    padding: 6rem 0;
+    text-align: center;
+    position: relative;
+    border-bottom: 5px solid var(--accent-yellow);
 }
 
 .hero-section h1 {
-    font-family: 'Georgia', serif;
-    font-size: 4.5rem;
-    line-height: 1.1;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--accent-yellow);
+    text-transform: uppercase;
 }
 
-/* --- CARTES DE MENU (FOOD CARD) --- */
+/* --- CARTES PRODUITS (MENU) --- */
 .product-card {
     border: none;
-    border-radius: var(--radius-lg);
-    background: #ffffff;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background: white;
+    box-shadow: var(--shadow);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    height: 100%;
 }
 
 .product-card:hover {
@@ -81,116 +90,99 @@ body {
     box-shadow: var(--shadow-hover);
 }
 
-.product-card .img-container {
-    overflow: hidden;
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    position: relative;
-}
-
 .product-card img {
-    transition: transform 0.8s ease;
     height: 250px;
     width: 100%;
     object-fit: cover;
-}
-
-.product-card:hover img {
-    transform: scale(1.08);
+    border-bottom: 4px solid var(--accent-yellow);
 }
 
 .product-card .card-body {
-    padding: 2rem;
-    text-align: center;
+    padding: 1.5rem;
 }
 
 .product-card .card-title {
-    font-family: 'Georgia', serif;
-    font-size: 1.4rem;
-    color: var(--primary-green);
-    margin-bottom: 0.5rem;
-}
-
-.product-card .price-tag {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--accent-gold);
-    display: block;
-    margin: 1rem 0;
-}
-
-/* --- BOUTONS ÉLÉGANTS --- */
-.btn {
-    padding: 0.9rem 2.2rem;
-    border-radius: var(--radius-md);
-    text-transform: uppercase;
-    font-size: 0.8rem;
     font-weight: 700;
-    letter-spacing: 1.2px;
-    transition: all 0.4s ease;
+    color: var(--primary-green);
+    font-size: 1.3rem;
 }
 
-.btn-primary {
-    background-color: var(--primary-green);
+.product-card .price-badge {
+    display: inline-block;
+    background: var(--dark-charcoal);
+    color: var(--accent-yellow);
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+/* --- BOUTONS (Sans rouge) --- */
+.btn {
+    border-radius: 50px;
+    padding: 0.8rem 1.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    transition: 0.3s;
+}
+
+/* Bouton principal : Jaune/Noir */
+.btn-primary, .btn-warning {
+    background-color: var(--accent-yellow) !important;
+    border: none !important;
+    color: var(--dark-charcoal) !important;
+}
+
+.btn-primary:hover, .btn-warning:hover {
+    background-color: var(--dark-charcoal) !important;
+    color: var(--accent-yellow) !important;
+    transform: scale(1.05);
+}
+
+/* Bouton secondaire : Vert */
+.btn-success {
+    background-color: var(--secondary-green) !important;
     border: none;
-    color: white;
 }
 
-.btn-primary:hover {
-    background-color: var(--secondary-green);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(61, 99, 37, 0.2);
+/* Bouton de danger (remplacé par Orange Foncé au lieu de Rouge) */
+.btn-danger {
+    background-color: #e67e22 !important; /* Orange brûlé */
+    border: none;
 }
 
-.btn-warning {
-    background-color: var(--accent-gold);
-    color: white;
+/* --- PANIER ET BADGES --- */
+.badge.bg-accent {
+    background-color: var(--accent-yellow) !important;
+    color: var(--dark-charcoal) !important;
+    font-weight: 900;
+    animation: pulse 2s infinite;
 }
 
-/* --- FORMULAIRES ET CHECKOUT --- */
-.card {
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
-}
-
+/* --- FORMULAIRES --- */
 .card-header {
-    background: var(--primary-green);
-    color: var(--accent-gold);
-    border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
-}
-
-.form-control {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 1rem;
+    background: var(--primary-green) !important;
+    color: var(--accent-yellow) !important;
+    border-bottom: 3px solid var(--accent-gold);
 }
 
 .form-control:focus {
-    background-color: #fff;
-    border-color: var(--accent-gold);
+    border-color: var(--accent-yellow);
+    box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.2);
 }
 
-/* --- BADGES ET STATUTS --- */
-.badge {
-    border-radius: 8px;
-    padding: 0.6em 1.2em;
-    font-weight: 700;
-    text-transform: uppercase;
+/* --- ANIMATIONS --- */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
 }
 
-/* --- EFFET DE PULSATION POUR LE PANIER --- */
-@keyframes softPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); box-shadow: 0 0 15px var(--accent-gold); }
-    100% { transform: scale(1); }
-}
-
-.badge.bg-accent {
-    background-color: var(--accent-gold) !important;
-    animation: softPulse 2s infinite ease-in-out;
-}
-
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-    .hero-section h1 { font-size: 2.8rem; }
-    .product-card img { height: 200px; }
+footer {
+    background: var(--dark-charcoal);
+    color: white;
+    padding: 2rem 0;
+    border-top: 4px solid var(--primary-green);
 }

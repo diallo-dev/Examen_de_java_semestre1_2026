@@ -4,66 +4,72 @@
 }
 
 <div class="container my-5">
-    <h1 class="text-center mb-4">
-        <i class="fas fa-shopping-cart"></i> Mon Panier
-    </h1>
+    <div class="d-flex align-items-center mb-5">
+        <h1 class="fw-bold text-primary-green mb-0">
+            <i class="fas fa-shopping-basket me-2"></i> Votre Panier
+        </h1>
+        <div class="ms-3 flex-grow-1 border-bottom border-2" style="opacity: 0.1;"></div>
+    </div>
 
     @if (!Model.Items.Any())
     {
-        <div class="alert alert-info text-center">
-            <h4>Votre panier est vide</h4>
-            <p>Ajoutez des produits depuis notre carte</p>
-            <a href="/Catalogue" class="btn btn-danger">
-                <i class="fas fa-utensils"></i> Voir la carte
-            </a>
+        <div class="card border-0 shadow-sm p-5 text-center">
+            <div class="card-body">
+                <div class="mb-4">
+                    <i class="fas fa-cart-arrow-down fa-5x text-light-green"></i>
+                </div>
+                <h3 class="text-muted">Votre panier semble bien vide...</h3>
+                <p class="mb-4">Laissez-vous tenter par l'un de nos délicieux burgers !</p>
+                <a href="/Catalogue" class="btn btn-primary btn-lg px-5">
+                    <i class="fas fa-hamburger me-2"></i> Découvrir la carte
+                </a>
+            </div>
         </div>
     }
     else
     {
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-lg-8">
                 @foreach (var item in Model.Items)
                 {
-                    <div class="card mb-3">
-                        <div class="card-body">
+                    <div class="card mb-3 border-0 shadow-sm hover-shadow transition-all overflow-hidden" style="border-radius: 15px;">
+                        <div class="card-body p-3">
                             <div class="row align-items-center">
-                                <div class="col-md-2">
+                                <div class="col-3 col-md-2">
                                     @if (!string.IsNullOrEmpty(item.UrlImage))
                                     {
-                                        <img src="@item.UrlImage" class="img-fluid rounded" alt="@item.Nom">
+                                        <img src="@item.UrlImage" class="img-fluid rounded-3 shadow-sm" alt="@item.Nom" style="height: 80px; width: 80px; object-fit: cover;">
                                     }
                                     else
                                     {
-                                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 80px;">
-                                            <i class="fas fa-burger fa-2x"></i>
+                                        <div class="bg-light-green text-secondary-green d-flex align-items-center justify-content-center rounded-3" style="height: 80px; width: 80px;">
+                                            <i class="fas fa-utensils fa-2x"></i>
                                         </div>
                                     }
                                 </div>
-                                <div class="col-md-4">
-                                    <h5>@item.Nom</h5>
+                                <div class="col-6 col-md-5">
+                                    <h5 class="fw-bold text-primary-green mb-1">@item.Nom</h5>
                                     @if (item.Type == "menu")
                                     {
-                                        <span class="badge bg-warning text-dark">MENU</span>
+                                        <span class="badge bg-accent text-dark-text mb-1" style="font-size: 0.7rem;">FORMULE MENU</span>
                                     }
                                     @if (item.Complements.Any())
                                     {
-                                        <small class="text-muted d-block">
-                                            + @string.Join(", ", item.Complements.Select(c => c.Nom))
-                                        </small>
+                                        <div class="small text-muted">
+                                            <i class="fas fa-plus-circle text-accent-gold"></i> @string.Join(", ", item.Complements.Select(c => c.Nom))
+                                        </div>
                                     }
                                 </div>
-                                <div class="col-md-2">
-                                    <strong>@item.Prix FCFA</strong>
+                                <div class="col-3 col-md-3 text-center">
+                                    <div class="fw-bold text-dark-text">@item.Prix FCFA</div>
+                                    <div class="badge bg-light text-muted border mt-1">Qté : @item.Quantite</div>
                                 </div>
-                                <div class="col-md-2">
-                                    <strong>x @item.Quantite</strong>
-                                </div>
-                                <div class="col-md-2">
+                                <div class="col-12 col-md-2 text-end mt-3 mt-md-0">
                                     <form method="post" action="/Commande/RetirerItem">
                                         <input type="hidden" name="id" value="@item.Id" />
                                         <input type="hidden" name="type" value="@item.Type" />
-                                        <button type="submit" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
+                                        <button type="submit" class="btn btn-outline-danger border-0 btn-sm text-muted hover-red" title="Supprimer">
+                                            <i class="fas fa-trash-alt fa-lg"></i>
                                         </button>
                                     </form>
                                 </div>
@@ -73,28 +79,49 @@
                 }
             </div>
 
-            <div class="col-md-4">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Résumé</h5>
-                        <hr>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Nombre d'articles :</span>
-                            <strong>@Model.NombreItems</strong>
-                        </div>
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg sticky-top" style="top: 100px; border-radius: 20px;">
+                    <div class="card-header bg-primary-green text-center py-3">
+                        <h5 class="mb-0 text-white fw-bold">Résumé de la commande</h5>
+                    </div>
+                    <div class="card-body p-4">
                         <div class="d-flex justify-content-between mb-3">
-                            <span>Total :</span>
-                            <h4 class="text-danger">@Model.Total FCFA</h4>
+                            <span class="text-muted">Nombre d'articles</span>
+                            <span class="fw-bold text-primary-green">@Model.NombreItems</span>
                         </div>
-                        <a href="/Commande/Valider" class="btn btn-danger btn-lg w-100">
-                            <i class="fas fa-check"></i> Valider la commande
+                        <div class="d-flex justify-content-between mb-3 pb-3 border-bottom border-dashed">
+                            <span class="text-muted">Frais de service</span>
+                            <span class="text-success fw-bold">Gratuit</span>
+                        </div>
+                        
+                        <div class="text-center my-4">
+                            <p class="small text-muted text-uppercase mb-1">Total à régler</p>
+                            <div class="price-tag fs-2 border-0 shadow-none bg-transparent py-0">
+                                @Model.Total <small class="fs-6">FCFA</small>
+                            </div>
+                        </div>
+
+                        <a href="/Commande/Valider" class="btn btn-primary btn-lg w-100 py-3 shadow mb-3">
+                            <i class="fas fa-shopping-bag me-2"></i> COMMANDER
                         </a>
-                        <a href="/Catalogue" class="btn btn-outline-secondary mt-2 w-100">
-                            Continuer mes achats
+                        
+                        <a href="/Catalogue" class="btn btn-outline-secondary w-100 border-2">
+                            <i class="fas fa-chevron-left me-1"></i> Continuer mes achats
                         </a>
+                    </div>
+                    <div class="card-footer bg-light border-0 py-3 text-center">
+                        <img src="https://img.icons8.com/color/48/000000/visa.png" height="25" class="mx-1" alt="Visa" />
+                        <img src="https://img.icons8.com/color/48/000000/mastercard.png" height="25" class="mx-1" alt="Mastercard" />
+                        <span class="small text-muted d-block mt-2"><i class="fas fa-lock"></i> Paiement 100% sécurisé</span>
                     </div>
                 </div>
             </div>
         </div>
     }
 </div>
+
+<style>
+    .border-dashed { border-style: dashed !important; }
+    .hover-shadow:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    .hover-red:hover { color: #e67e22 !important; background: transparent !important; }
+</style>

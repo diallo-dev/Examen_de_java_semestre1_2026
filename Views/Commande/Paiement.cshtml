@@ -6,14 +6,17 @@
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-danger text-white text-center">
-                    <h3><i class="fas fa-credit-card"></i> Paiement</h3>
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary-green text-center py-4">
+                    <h3 class="mb-0 text-accent-yellow"><i class="fas fa-shield-alt"></i> Paiement Sécurisé</h3>
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <strong>Montant à payer :</strong> 
-                        <span class="h4 text-danger">@Model.Montant FCFA</span>
+                
+                <div class="card-body p-4">
+                    <div class="bg-light-green rounded-4 p-4 text-center mb-4 border border-2 border-dashed">
+                        <p class="text-muted text-uppercase fw-bold mb-1">Montant total à régler</p>
+                        <div class="price-tag fs-1 border-0 shadow-none bg-transparent">
+                            @Model.Montant <span class="fs-4">FCFA</span>
+                        </div>
                     </div>
 
                     <form method="post" action="/Paiement/Traiter">
@@ -21,63 +24,101 @@
                         <input type="hidden" name="Montant" value="@Model.Montant" />
 
                         <div class="mb-4">
-                            <label class="form-label fw-bold">Choisissez votre mode de paiement</label>
+                            <label class="form-label fw-bold text-primary-green mb-3">
+                                <i class="fas fa-wallet"></i> Choisissez votre mode de paiement
+                            </label>
 
-                            <div class="form-check mb-3 p-3 border rounded">
-                                <input class="form-check-input" type="radio" name="ModePaiement" 
+                            <div class="form-check custom-option mb-3 p-0">
+                                <input class="form-check-input d-none" type="radio" name="ModePaiement" 
                                        value="Wave" id="wave" checked>
-                                <label class="form-check-label w-100" for="wave">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-primary text-white rounded p-2 me-3">
-                                            <i class="fas fa-mobile-alt fa-2x"></i>
-                                        </div>
-                                        <div>
-                                            <strong>Wave</strong>
-                                            <p class="text-muted mb-0">Paiement mobile Wave</p>
-                                        </div>
+                                <label class="form-check-label w-100 border rounded-4 p-3 d-flex align-items-center cursor-pointer transition-all" for="wave">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                         style="background-color: #1dcaff; width: 60px; height: 60px;">
+                                        <i class="fas fa-mobile-alt fa-2x text-white"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="mb-0 fw-bold">Wave</h5>
+                                        <p class="text-muted small mb-0">Payez instantanément avec Wave</p>
+                                    </div>
+                                    <div class="check-icon text-primary-green">
+                                        <i class="fas fa-check-circle fa-lg"></i>
                                     </div>
                                 </label>
                             </div>
 
-                            <div class="form-check mb-3 p-3 border rounded">
-                                <input class="form-check-input" type="radio" name="ModePaiement" 
+                            <div class="form-check custom-option mb-3 p-0">
+                                <input class="form-check-input d-none" type="radio" name="ModePaiement" 
                                        value="Orange_Money" id="om">
-                                <label class="form-check-label w-100" for="om">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-warning text-dark rounded p-2 me-3">
-                                            <i class="fas fa-mobile-alt fa-2x"></i>
-                                        </div>
-                                        <div>
-                                            <strong>Orange Money</strong>
-                                            <p class="text-muted mb-0">Paiement mobile Orange Money</p>
-                                        </div>
+                                <label class="form-check-label w-100 border rounded-4 p-3 d-flex align-items-center cursor-pointer transition-all" for="om">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                         style="background-color: #ff6600; width: 60px; height: 60px;">
+                                        <i class="fas fa-phone-alt fa-2x text-white"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="mb-0 fw-bold">Orange Money</h5>
+                                        <p class="text-muted small mb-0">Confirmation via votre code USSD</p>
+                                    </div>
+                                    <div class="check-icon text-muted">
+                                        <i class="far fa-circle fa-lg"></i>
                                     </div>
                                 </label>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Numéro de téléphone (optionnel)</label>
-                            <input type="tel" name="NumeroTelephone" class="form-control" 
-                                   placeholder="77 123 45 67">
-                            <small class="text-muted">Pour confirmation de paiement</small>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-primary-green">Numéro de téléphone</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="fas fa-phone text-muted"></i></span>
+                                <input type="tel" name="NumeroTelephone" class="form-control border-start-0 ps-0" 
+                                       placeholder="7X XXX XX XX" required>
+                            </div>
+                            <small class="text-muted"><i class="fas fa-info-circle"></i> Le numéro utilisé pour le transfert.</small>
                         </div>
 
-                        <div class="alert alert-warning">
-                            <i class="fas fa-info-circle"></i> 
-                            <strong>Note :</strong> Ceci est une simulation de paiement.
+                        <div class="alert alert-warning border-0 rounded-3 small">
+                            <i class="fas fa-shield-alt"></i> 
+                            <strong>Note :</strong> Simulation sécurisée. Aucun débit réel ne sera effectué sur cette version de test.
                         </div>
 
-                        <button type="submit" class="btn btn-danger btn-lg w-100">
-                            <i class="fas fa-check"></i> Confirmer le paiement
+                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 shadow-sm mt-3">
+                            <i class="fas fa-lock me-2"></i> VALIDER LE PAIEMENT
                         </button>
                     </form>
 
-                    <a href="/Commande/Panier" class="btn btn-outline-secondary mt-3 w-100">
-                        <i class="fas fa-arrow-left"></i> Retour au panier
-                    </a>
+                    <div class="text-center mt-4">
+                        <a href="/Commande/Panier" class="text-muted text-decoration-none small">
+                            <i class="fas fa-chevron-left"></i> Modifier ma commande
+                        </a>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="text-center mt-4 text-muted">
+                <i class="fab fa-cc-visa fa-2x mx-2"></i>
+                <i class="fab fa-cc-mastercard fa-2x mx-2"></i>
+                <i class="fas fa-lock fa-lg mx-2"></i>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .cursor-pointer { cursor: pointer; }
+    .transition-all { transition: all 0.3s ease; }
+    
+    /* Effet de sélection sur les modes de paiement */
+    .custom-option input:checked + label {
+        border-color: var(--primary-green) !important;
+        background-color: rgba(26, 48, 18, 0.03);
+        border-width: 2px !important;
+    }
+    
+    .custom-option input:checked + label .check-icon {
+        color: var(--primary-green) !important;
+    }
+    
+    .custom-option label:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.02);
+    }
+</style>

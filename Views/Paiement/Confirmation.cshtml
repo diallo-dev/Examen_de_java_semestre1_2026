@@ -1,42 +1,74 @@
 @model Commande
 @{
-    ViewData["Title"] = "Confirmation";
+    ViewData["Title"] = "Merci pour votre commande";
 }
 
 <div class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-body text-center py-5">
-                    <div class="text-success mb-4">
-                        <i class="fas fa-check-circle fa-5x"></i>
-                    </div>
-                    <h1 class="text-success mb-3">Paiement réussi !</h1>
-                    <p class="lead">Votre commande a été validée et payée avec succès.</p>
-
-                    <div class="alert alert-info mt-4">
-                        <h4>Commande N° @Model.Id</h4>
-                        <p><strong>Montant payé :</strong> @Model.MontantTotal FCFA</p>
-                        <p><strong>Mode de consommation :</strong> @Model.LieuConsommation</p>
-                        <p><strong>Date :</strong> @Model.Date.ToString("dd/MM/yyyy HH:mm")</p>
+            <div class="card border-0 shadow-lg overflow-hidden" style="border-radius: 25px;">
+                <div class="bg-primary-green" style="height: 10px;"></div>
+                
+                <div class="card-body text-center py-5 px-md-5">
+                    <div class="mb-4 animate__animated animate__bounceIn">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-light-green rounded-circle" style="width: 120px; height: 120px;">
+                            <i class="fas fa-check-circle fa-5x text-success"></i>
+                        </div>
                     </div>
 
-                    <div class="mt-4">
-                        <a href="/Commande/MesCommandes" class="btn btn-primary btn-lg me-2">
-                            <i class="fas fa-list"></i> Voir mes commandes
+                    <h1 class="display-5 fw-bold text-primary-green mb-3">Merci pour votre commande !</h1>
+                    <p class="lead text-muted mb-4">
+                        Votre paiement a été validé avec succès. Notre équipe en cuisine commence déjà à préparer votre plaisir. 👨‍🍳🔥
+                    </p>
+
+                    <div class="bg-light rounded-4 p-4 mb-4 border border-1">
+                        <div class="row text-start g-3">
+                            <div class="col-sm-6">
+                                <p class="small text-muted text-uppercase mb-0">Numéro de commande</p>
+                                <h5 class="fw-bold">#CMD-@Model.Id.ToString().PadLeft(5, '0')</h5>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <p class="small text-muted text-uppercase mb-0">Montant réglé</p>
+                                <h5 class="fw-bold text-primary-green">@Model.MontantTotal FCFA</h5>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="small text-muted text-uppercase mb-0">Mode de service</p>
+                                <h5 class="fw-bold">
+                                    <i class="fas fa-concierge-bell text-accent-gold me-1"></i> 
+                                    @(Model.LieuConsommation == "SurPlace" ? "Sur place" : 
+                                      Model.LieuConsommation == "Emporter" ? "À emporter" : "Livraison")
+                                </h5>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <p class="small text-muted text-uppercase mb-0">Date & Heure</p>
+                                <h5 class="fw-bold text-muted">@Model.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center mt-4">
+                        <a href="/Commande/MesCommandes" class="btn btn-primary btn-lg px-4 shadow">
+                            <i class="fas fa-receipt me-2"></i> Suivre ma commande
                         </a>
-                        <a href="/Catalogue" class="btn btn-outline-danger btn-lg">
-                            <i class="fas fa-home"></i> Retour à l'accueil
+                        <a href="/Catalogue" class="btn btn-outline-secondary btn-lg px-4 border-2">
+                            <i class="fas fa-hamburger me-2"></i> Commander autre chose
                         </a>
                     </div>
 
-                    <div class="mt-5">
-                        <p class="text-muted">
-                            <i class="fas fa-info-circle"></i> 
-                            Un email de confirmation vous a été envoyé.
+                    <div class="mt-5 pt-4 border-top">
+                        <p class="text-muted small">
+                            <i class="fas fa-envelope-open-text me-1 text-accent-gold"></i> 
+                            Un récapitulatif détaillé vous a été envoyé par email.
+                        </p>
+                        <p class="text-muted small">
+                            Besoin d'aide ? Contactez-nous au <strong>+221 XX XXX XX XX</strong>
                         </p>
                     </div>
                 </div>
+            </div>
+
+            <div class="text-center mt-4 text-muted">
+                <p>Partagez votre repas avec nous sur Instagram ! 📸 <span class="text-primary-green fw-bold">#BrasilBurger</span></p>
             </div>
         </div>
     </div>
