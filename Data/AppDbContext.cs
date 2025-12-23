@@ -24,7 +24,7 @@ namespace BrasilBurger.Web.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1. Mapping global : On s'assure que tout est en minuscules par défaut
+            
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
                 entity.SetTableName(entity.GetTableName().ToLower());
@@ -34,9 +34,9 @@ namespace BrasilBurger.Web.Data
                 }
             }
 
-            // 2. Configuration spécifique (Écrase le mapping global si nécessaire)
             
-            // Burger
+            
+            
             modelBuilder.Entity<Burger>(entity =>
             {
                 entity.ToTable("burger");
@@ -44,14 +44,14 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.EtatStock).HasColumnName("etatstock");
             });
 
-            // Complement
+            
             modelBuilder.Entity<Complement>(entity =>
             {
                 entity.ToTable("complement");
                 entity.Property(e => e.UrlImage).HasColumnName("url_image");
             });
 
-            // Menu
+            
             modelBuilder.Entity<Menu>(entity =>
             {
                 entity.ToTable("menu");
@@ -118,7 +118,7 @@ namespace BrasilBurger.Web.Data
 
                             modelBuilder.Entity<Paiement>(entity =>
                 {
-                    entity.ToTable("paiement"); // Nom exact de la table dans Neon
+                    entity.ToTable("paiement"); 
                     entity.HasKey(e => e.Id);
                     
                     entity.Property(e => e.Id).HasColumnName("id");
@@ -127,7 +127,7 @@ namespace BrasilBurger.Web.Data
                     entity.Property(e => e.Mode).HasColumnName("mode");
                     entity.Property(e => e.IdCommande).HasColumnName("id_commande");
 
-                    // Cette ligne lie le paiement à la commande
+                  
                     entity.HasOne(p => p.Commande)
                         .WithMany()
                         .HasForeignKey(p => p.IdCommande);
