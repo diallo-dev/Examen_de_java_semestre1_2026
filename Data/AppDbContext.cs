@@ -62,14 +62,20 @@ namespace BrasilBurger.Web.Data
             });
 
             // Client (IMPORTANT : Correction de id_client)
-            modelBuilder.Entity<Client>(entity =>
-            {
-                entity.ToTable("client");
-                // On garde id_client si c'est vraiment le nom dans Neon
-                entity.Property(e => e.Id).HasColumnName("id_client"); 
-                entity.Property(e => e.MotDePasse).HasColumnName("mot_de_passe");
-                entity.Property(e => e.Email).HasColumnName("email");
-            });
+            // Client (Mapping EXACT avec tes colonnes Neon)
+                modelBuilder.Entity<Client>(entity =>
+                {
+                    entity.ToTable("client");
+                    entity.HasKey(e => e.Id);
+                    entity.Property(e => e.Id).HasColumnName("id_client"); 
+                    entity.Property(e => e.Nom).HasColumnName("nom");
+                    entity.Property(e => e.Prenom).HasColumnName("prénom");    // Avec l'accent
+                    entity.Property(e => e.Adresse).HasColumnName("adresse");
+                    entity.Property(e => e.Type).HasColumnName("taper");      // Correspond à 'taper'
+                    entity.Property(e => e.Email).HasColumnName("e-mail");    // <--- CORRECTION ICI (avec le tiret)
+                    entity.Property(e => e.MotDePasse).HasColumnName("mot_de_passe");
+                    entity.Property(e => e.Telephone).HasColumnName("téléphone"); // Avec l'accent
+                });
 
             // Commande
             modelBuilder.Entity<Commande>(entity =>
