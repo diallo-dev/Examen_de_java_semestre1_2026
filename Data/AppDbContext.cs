@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 using BrasilBurger.Web.Entity;
 
 namespace BrasilBurger.Web.Data
@@ -10,7 +9,6 @@ namespace BrasilBurger.Web.Data
         {
         }
 
-        
         public DbSet<Burger> Burgers { get; set; }
         public DbSet<Complement> Complements { get; set; }
         public DbSet<Menu> Menus { get; set; }
@@ -26,148 +24,88 @@ namespace BrasilBurger.Web.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            
-            modelBuilder.HasPostgresEnum<EtatStockEnum>("etatstock");
+            // 1. Mapping global : On s'assure que tout est en minuscules par défaut
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                entity.SetTableName(entity.GetTableName().ToLower());
+                foreach (var property in entity.GetProperties())
+                {
+                    property.SetColumnName(property.Name.ToLower());
+                }
+            }
 
+            // 2. Configuration spécifique (Écrase le mapping global si nécessaire)
             
+            // Burger
             modelBuilder.Entity<Burger>(entity =>
             {
                 entity.ToTable("burger");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.Nom).HasColumnName("nom").IsRequired();
-                entity.Property(e => e.Prix).HasColumnName("prix").IsRequired();
                 entity.Property(e => e.UrlImage).HasColumnName("url_image");
-                entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.EtatStock).HasColumnName("etatstock");
             });
 
-            
+            // Complement
             modelBuilder.Entity<Complement>(entity =>
             {
                 entity.ToTable("complement");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.Nom).HasColumnName("nom");
-                entity.Property(e => e.Prix).HasColumnName("prix");
                 entity.Property(e => e.UrlImage).HasColumnName("url_image");
-                entity.Property(e => e.EtatStock).HasColumnName("etatstock");
             });
 
-            
+            // Menu
             modelBuilder.Entity<Menu>(entity =>
             {
                 entity.ToTable("menu");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.Nom).HasColumnName("nom");
                 entity.Property(e => e.UrlImage).HasColumnName("url_image");
-                entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.PrixTotal).HasColumnName("prix_total");
-                entity.Property(e => e.EtatStock).HasColumnName("etatstock");
-                
-               
                 entity.Ignore(e => e.Burger);
                 entity.Ignore(e => e.Complements);
             });
 
-            
+            // Client (IMPORTANT : Correction de id_client)
             modelBuilder.Entity<Client>(entity =>
             {
                 entity.ToTable("client");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id_client");
-                entity.Property(e => e.Nom).HasColumnName("nom");
-                entity.Property(e => e.Prenom).HasColumnName("prenom");
-                entity.Property(e => e.Adresse).HasColumnName("adresse");
-                entity.Property(e => e.Type).HasColumnName("type");
-                entity.Property(e => e.Telephone).HasColumnName("telephone");
-                entity.Property(e => e.Email).HasColumnName("email");
+                // On garde id_client si c'est vraiment le nom dans Neon
+                entity.Property(e => e.Id).HasColumnName("id_client"); 
                 entity.Property(e => e.MotDePasse).HasColumnName("mot_de_passe");
+                entity.Property(e => e.Email).HasColumnName("email");
             });
 
-            
+            // Commande
             modelBuilder.Entity<Commande>(entity =>
             {
                 entity.ToTable("commande");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.Date).HasColumnName("date");
                 entity.Property(e => e.EtatCmd).HasColumnName("etat_cmd");
                 entity.Property(e => e.MontantTotal).HasColumnName("montant_total");
                 entity.Property(e => e.LieuConsommation).HasColumnName("lieu_consommation");
                 entity.Property(e => e.FraisLivraison).HasColumnName("frais_livraison");
-                entity.Property(e => e.IdClient).HasColumnName("id_client");
-                entity.Property(e => e.IdGestionnaire).HasColumnName("id_gestionnaire");
-                entity.Property(e => e.IdLivreur).HasColumnName("id_livreur");
-                entity.Property(e => e.IdZone).HasColumnName("id_zone");
-
-               
-                entity.HasOne(e => e.Client).WithMany().HasForeignKey(e => e.IdClient);
                 
+                entity.HasOne(e => e.Client).WithMany().HasForeignKey(e => e.IdClient);
                 entity.Ignore(e => e.CommandeBurgers);
                 entity.Ignore(e => e.CommandeMenus);
             });
 
-            
+            // CommandeBurger
             modelBuilder.Entity<CommandeBurger>(entity =>
             {
                 entity.ToTable("commande_burger");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.IdCommande).HasColumnName("id_commande");
                 entity.Property(e => e.BurgerId).HasColumnName("id_burger");
-                entity.Property(e => e.Quantite).HasColumnName("quantite");
-                entity.Property(e => e.PrixUnitaire).HasColumnName("prix_unitaire");
+                entity.Property(e => e.IdCommande).HasColumnName("id_commande");
                 entity.Ignore(e => e.Burger);
             });
 
-            
-            modelBuilder.Entity<CommandeMenu>(entity =>
-            {
-                entity.ToTable("commande_menu");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.IdCommande).HasColumnName("id_commande");
-                entity.Property(e => e.MenuId).HasColumnName("id_menu");
-                entity.Property(e => e.Quantite).HasColumnName("quantite");
-                entity.Property(e => e.PrixUnitaire).HasColumnName("prix_unitaire");
-                entity.Ignore(e => e.Menu);
-            });
-
-            
-            modelBuilder.Entity<Paiement>(entity =>
-            {
-                entity.ToTable("paiement");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.Date).HasColumnName("date");
-                entity.Property(e => e.Montant).HasColumnName("montant");
-                entity.Property(e => e.Mode).HasColumnName("mode");
-                entity.Property(e => e.IdCommande).HasColumnName("id_commande");
-                entity.Ignore(e => e.Commande);
-            });
-
-            
-            modelBuilder.Entity<MenuBurger>(entity =>
-            {
+            // Autres tables de liaison
+            modelBuilder.Entity<MenuBurger>(entity => {
                 entity.ToTable("menu_burger");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.MenuId).HasColumnName("id_menu");
                 entity.Property(e => e.BurgerId).HasColumnName("id_burger");
-                entity.Property(e => e.Quantite).HasColumnName("quantite");
             });
 
-            
-            modelBuilder.Entity<MenuComplement>(entity =>
-            {
+            modelBuilder.Entity<MenuComplement>(entity => {
                 entity.ToTable("menu_complement");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.MenuId).HasColumnName("id_menu");
                 entity.Property(e => e.ComplementId).HasColumnName("id_complement");
-                entity.Property(e => e.Quantite).HasColumnName("quantite");
             });
-    }   }
+        }
+    }
 }
