@@ -36,6 +36,10 @@ builder.Services.AddSession(options =>
 });
 
 
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"/tmp/keys")); // Dossier temporaire sur Render
+
+
 builder.Services.AddScoped<IBurgerRepository, BurgerRepository>();
 builder.Services.AddScoped<IComplementRepository, ComplementRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
