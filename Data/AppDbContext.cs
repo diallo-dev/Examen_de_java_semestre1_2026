@@ -63,19 +63,21 @@ namespace BrasilBurger.Web.Data
 
             // Client (IMPORTANT : Correction de id_client)
             // Client (Mapping EXACT avec tes colonnes Neon)
-                modelBuilder.Entity<Client>(entity =>
-                {
-                    entity.ToTable("client");
-                    entity.HasKey(e => e.Id);
-                    entity.Property(e => e.Id).HasColumnName("id_client"); 
-                    entity.Property(e => e.Nom).HasColumnName("nom");
-                    entity.Property(e => e.Prenom).HasColumnName("prénom");    // Avec l'accent
-                    entity.Property(e => e.Adresse).HasColumnName("adresse");
-                    entity.Property(e => e.Type).HasColumnName("taper");      // Correspond à 'taper'
-                    entity.Property(e => e.Email).HasColumnName("e-mail");    // <--- CORRECTION ICI (avec le tiret)
-                    entity.Property(e => e.MotDePasse).HasColumnName("mot_de_passe");
-                    entity.Property(e => e.Telephone).HasColumnName("téléphone"); // Avec l'accent
-                });
+               modelBuilder.Entity<Client>(entity =>
+            {
+                entity.ToTable("client");
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).HasColumnName("id_client"); 
+                entity.Property(e => e.Nom).HasColumnName("nom");
+                entity.Property(e => e.Prenom).HasColumnName("prénom");    
+                entity.Property(e => e.Adresse).HasColumnName("adresse");
+                
+                // --- LES CORRECTIONS ICI ---
+                entity.Property(e => e.Type).HasColumnName("type");           // Changé de 'taper' à 'type'
+                entity.Property(e => e.Email).HasColumnName("email");         // Sans le tiret
+                entity.Property(e => e.MotDePasse).HasColumnName("mot_de_passe");
+                entity.Property(e => e.Telephone).HasColumnName("telephone");
+            });
 
             // Commande
             modelBuilder.Entity<Commande>(entity =>
