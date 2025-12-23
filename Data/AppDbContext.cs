@@ -114,6 +114,24 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.MenuId).HasColumnName("id_menu");
                 entity.Property(e => e.ComplementId).HasColumnName("id_complement");
             });
+
+
+                            modelBuilder.Entity<Paiement>(entity =>
+                {
+                    entity.ToTable("paiement"); // Nom exact de la table dans Neon
+                    entity.HasKey(e => e.Id);
+                    
+                    entity.Property(e => e.Id).HasColumnName("id");
+                    entity.Property(e => e.Date).HasColumnName("date");
+                    entity.Property(e => e.Montant).HasColumnName("montant");
+                    entity.Property(e => e.Mode).HasColumnName("mode");
+                    entity.Property(e => e.IdCommande).HasColumnName("id_commande");
+
+                    // Cette ligne lie le paiement à la commande
+                    entity.HasOne(p => p.Commande)
+                        .WithMany()
+                        .HasForeignKey(p => p.IdCommande);
+                });
         }
     }
 }
