@@ -30,18 +30,18 @@ namespace BrasilBurger.Web.ViewModels
         public string? Adresse { get; set; }
     }
 
-    // ViewModel pour la connexion
+   
     public class ConnexionViewModel
     {
         public string Email { get; set; }
         public string MotDePasse { get; set; }
     }
 
-    // Item du panier
+   
     public class ItemPanier
     {
         public int Id { get; set; }
-        public string Type { get; set; } // "burger" ou "menu"
+        public string Type { get; set; } 
         public string Nom { get; set; }
         public double Prix { get; set; }
         public int Quantite { get; set; }
@@ -51,7 +51,7 @@ namespace BrasilBurger.Web.ViewModels
         public double Total => Prix * Quantite;
     }
 
-    // ViewModel pour le panier
+    
     public class PanierViewModel
     {
         public List<ItemPanier> Items { get; set; } = new();
@@ -59,7 +59,7 @@ namespace BrasilBurger.Web.ViewModels
         public int NombreItems => Items.Sum(i => i.Quantite);
     }
 
-    // ViewModel pour valider une commande
+    
     public class ValiderCommandeViewModel
     {
         public PanierViewModel Panier { get; set; }
@@ -68,7 +68,7 @@ namespace BrasilBurger.Web.ViewModels
         public int? IdZone { get; set; }
     }
 
-    // ViewModel pour le paiement
+   
     public class PaiementViewModel
     {
         public int IdCommande { get; set; }
@@ -77,13 +77,13 @@ namespace BrasilBurger.Web.ViewModels
         public string? NumeroTelephone { get; set; }
     }
 
-    // ViewModel pour l'historique des commandes
+    
     public class MesCommandesViewModel
     {
         public List<CommandeDetailViewModel> Commandes { get; set; } = new();
     }
 
-    // ViewModel pour les détails d'une commande
+   
     public class CommandeDetailViewModel
     {
         public int Id { get; set; }

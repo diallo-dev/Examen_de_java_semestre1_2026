@@ -14,14 +14,14 @@ namespace BrasilBurger.Web.Controllers
             _clientService = clientService;
         }
 
-        // GET: /Auth/Inscription
+      
         [HttpGet]
         public IActionResult Inscription()
         {
             return View();
         }
 
-        // POST: /Auth/Inscription
+        
         [HttpPost]
         public async Task<IActionResult> Inscription(InscriptionViewModel model)
         {
@@ -36,7 +36,7 @@ namespace BrasilBurger.Web.Controllers
                 return View(model);
             }
 
-            // Vérifier si l'email existe déjà
+            
             var existant = await _clientService.ConnecterAsync(model.Email, "");
             if (existant != null)
             {
@@ -59,14 +59,14 @@ namespace BrasilBurger.Web.Controllers
             return RedirectToAction("Connexion");
         }
 
-        // GET: /Auth/Connexion
+        
         [HttpGet]
         public IActionResult Connexion()
         {
             return View();
         }
 
-        // POST: /Auth/Connexion
+        
         [HttpPost]
         public async Task<IActionResult> Connexion(ConnexionViewModel model)
         {
@@ -83,7 +83,7 @@ namespace BrasilBurger.Web.Controllers
                 return View(model);
             }
 
-            // Stocker l'ID du client en session
+           
             HttpContext.Session.SetInt32("ClientId", client.Id);
             HttpContext.Session.SetString("ClientNom", $"{client.Prenom} {client.Nom}");
 
@@ -91,7 +91,7 @@ namespace BrasilBurger.Web.Controllers
             return RedirectToAction("Index", "Catalogue");
         }
 
-        // GET: /Auth/Deconnexion
+        
         public IActionResult Deconnexion()
         {
             HttpContext.Session.Clear();
@@ -99,7 +99,7 @@ namespace BrasilBurger.Web.Controllers
             return RedirectToAction("Index", "Catalogue");
         }
 
-        // Vérifier si l'utilisateur est connecté
+        
         private bool IsAuthenticated()
         {
             return HttpContext.Session.GetInt32("ClientId").HasValue;

@@ -61,8 +61,7 @@ namespace BrasilBurger.Web.Data
                 entity.Ignore(e => e.Complements);
             });
 
-            // Client (IMPORTANT : Correction de id_client)
-            // Client (Mapping EXACT avec tes colonnes Neon)
+            
                                 modelBuilder.Entity<Client>(entity =>
                 {
                     entity.ToTable("client");
@@ -77,7 +76,8 @@ namespace BrasilBurger.Web.Data
                     entity.Property(e => e.Telephone).HasColumnName("telephone");
                 });
 
-            // Commande
+           
+           
             modelBuilder.Entity<Commande>(entity =>
             {
                 entity.ToTable("commande");
@@ -91,7 +91,8 @@ namespace BrasilBurger.Web.Data
                 entity.Ignore(e => e.CommandeMenus);
             });
 
-            // CommandeBurger
+          
+          
             modelBuilder.Entity<CommandeBurger>(entity =>
             {
                 entity.ToTable("commande_burger");
@@ -100,7 +101,8 @@ namespace BrasilBurger.Web.Data
                 entity.Ignore(e => e.Burger);
             });
 
-            // Autres tables de liaison
+            
+            
             modelBuilder.Entity<MenuBurger>(entity => {
                 entity.ToTable("menu_burger");
                 entity.Property(e => e.MenuId).HasColumnName("id_menu");

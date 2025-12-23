@@ -18,7 +18,8 @@ namespace BrasilBurger.Web.Controllers
             _commandeService = commandeService;
         }
 
-        // POST: /Paiement/Traiter
+       
+       
         [HttpPost]
         public async Task<IActionResult> Traiter(PaiementViewModel model)
         {
@@ -27,14 +28,15 @@ namespace BrasilBurger.Web.Controllers
                 return View("Paiement", model);
             }
 
-            // Vérifier que la commande existe
+            
+            
             var commande = await _commandeService.TrouverCommandeParIdAsync(model.IdCommande);
             if (commande == null)
             {
                 return NotFound();
             }
 
-            // Vérifier que la commande n'est pas déjà payée
+           
             var dejaPayee = await _paiementService.VerifierPaiementCommandeAsync(model.IdCommande);
             if (dejaPayee)
             {
@@ -42,7 +44,8 @@ namespace BrasilBurger.Web.Controllers
                 return RedirectToAction("MesCommandes", "Commande");
             }
 
-            // Créer le paiement (simulation)
+            
+            
             var paiement = new Paiement
             {
                 IdCommande = model.IdCommande,
@@ -57,7 +60,8 @@ namespace BrasilBurger.Web.Controllers
             return RedirectToAction("Confirmation", new { id = model.IdCommande });
         }
 
-        // GET: /Paiement/Confirmation/5
+       
+       
         public async Task<IActionResult> Confirmation(int id)
         {
             var commande = await _commandeService.TrouverCommandeParIdAsync(id);

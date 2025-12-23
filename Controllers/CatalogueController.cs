@@ -20,7 +20,7 @@ namespace BrasilBurger.Web.Controllers
             _complementService = complementService;
         }
 
-        // GET: /Catalogue ou /
+       
         public async Task<IActionResult> Index(string? filtre)
         {
             var burgers = await _burgerService.ListerParEtatAsync("disponible");
@@ -36,7 +36,7 @@ namespace BrasilBurger.Web.Controllers
             return View(viewModel);
         }
 
-        // GET: /Catalogue/DetailsBurger/5
+        
         public async Task<IActionResult> DetailsBurger(int id)
         {
             var burger = await _burgerService.TrouverParIdAsync(id);
@@ -56,7 +56,7 @@ namespace BrasilBurger.Web.Controllers
             return View(viewModel);
         }
 
-        // GET: /Catalogue/DetailsMenu/5
+        
         public async Task<IActionResult> DetailsMenu(int id)
         {
             var menu = await _menuService.TrouverParIdAsync(id);
@@ -73,7 +73,7 @@ namespace BrasilBurger.Web.Controllers
             return View(viewModel);
         }
 
-        // Méthode pour récupérer le nombre d'items dans le panier (pour le badge)
+        
         public IActionResult GetPanierCount()
         {
             var panier = Helpers.PanierHelper.GetPanier(HttpContext.Session);
