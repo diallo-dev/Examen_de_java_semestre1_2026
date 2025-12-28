@@ -81,19 +81,22 @@ namespace BrasilBurger.Web.Data
             modelBuilder.Entity<Commande>(entity =>
                 {
                     entity.ToTable("commande");
-                    entity.Property(e => e.EtatCmd).HasColumnName("etat_cmd");
-                    entity.Property(e => e.MontantTotal).HasColumnName("montant_total");
-                    entity.Property(e => e.LieuConsommation).HasColumnName("lieu_consommation");
-                    entity.Property(e => e.FraisLivraison).HasColumnName("frais_livraison");
                     
                     
-                    entity.Property(e => e.IdClient).HasColumnName("id_client"); 
+                    entity.Property(e => e.IdClient).HasColumnName("id_client");           
+                    entity.Property(e => e.IdGestionnaire).HasColumnName("id_gestionnaire"); 
+                    entity.Property(e => e.IdLivreur).HasColumnName("id_livreur");        
                     
+                    entity.Property(e => e.EtatCmd).HasColumnName("etat_cmd");             
+                    entity.Property(e => e.MontantTotal).HasColumnName("montant_total");   
+                    entity.Property(e => e.FraisLivraison).HasColumnName("frais_livraison"); 
+                    entity.Property(e => e.LieuConsommation).HasColumnName("lieu_consommation"); 
+
+                   
                     entity.HasOne(e => e.Client).WithMany().HasForeignKey(e => e.IdClient);
                     entity.Ignore(e => e.CommandeBurgers);
                     entity.Ignore(e => e.CommandeMenus);
                 });
-
           
           
             modelBuilder.Entity<CommandeBurger>(entity =>
