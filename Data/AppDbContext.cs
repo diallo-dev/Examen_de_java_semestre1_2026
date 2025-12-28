@@ -104,14 +104,18 @@ namespace BrasilBurger.Web.Data
                 });
           
           
-            modelBuilder.Entity<CommandeBurger>(entity =>
-            {
-                entity.ToTable("commande_burger");
-                entity.Property(e => e.BurgerId).HasColumnName("id_burger");
-                entity.Property(e => e.IdCommande).HasColumnName("id_commande");
-                entity.Ignore(e => e.Burger);
-            });
-
+           modelBuilder.Entity<CommandeBurger>(entity =>
+                {
+                    entity.ToTable("commande_burger");
+                    entity.Property(e => e.IdCommande).HasColumnName("id_commande");
+                    entity.Property(e => e.BurgerId).HasColumnName("id_burger");
+                    entity.Property(e => e.Quantite).HasColumnName("quantite");
+                    
+                    // LA CORRECTION POUR L'ERREUR ACTUELLE :
+                    entity.Property(e => e.PrixUnitaire).HasColumnName("prix_unitaire"); 
+                    
+                    entity.Ignore(e => e.Burger);
+                });
             
             
             modelBuilder.Entity<MenuBurger>(entity => {
@@ -125,6 +129,21 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.MenuId).HasColumnName("id_menu");
                 entity.Property(e => e.ComplementId).HasColumnName("id_complement");
             });
+
+
+
+
+             modelBuilder.Entity<CommandeMenu>(entity =>
+                    {
+                        entity.ToTable("commande_menu");
+                        entity.Property(e => e.IdCommande).HasColumnName("id_commande");
+                        entity.Property(e => e.MenuId).HasColumnName("id_menu");
+                        entity.Property(e => e.Quantite).HasColumnName("quantite");
+                        
+                        // On met l'underscore par précaution ici aussi
+                        entity.Property(e => e.PrixUnitaire).HasColumnName("prix_unitaire"); 
+                    });
+
 
 
                             modelBuilder.Entity<Paiement>(entity =>
