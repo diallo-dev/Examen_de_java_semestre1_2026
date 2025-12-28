@@ -50,13 +50,22 @@ namespace BrasilBurger.Web.Data
             });
 
             // 4. CLIENT
-            modelBuilder.Entity<Client>(entity =>
-            {
-                entity.ToTable("client");
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).HasColumnName("id_client"); 
-                entity.Property(e => e.MotDePasse).HasColumnName("mot_de_passe");
-            });
+           // 4. CLIENT (Correction de la casse pour PostgreSQL)
+                modelBuilder.Entity<Client>(entity =>
+                {
+                    entity.ToTable("client");
+                    entity.HasKey(e => e.Id);
+                    entity.Property(e => e.Id).HasColumnName("id_client"); 
+                    
+                    // On force les noms en minuscules pour correspondre à Neon
+                    entity.Property(e => e.Nom).HasColumnName("nom");
+                    entity.Property(e => e.Prenom).HasColumnName("prenom");
+                    entity.Property(e => e.Adresse).HasColumnName("adresse"); // <--- FIX POUR TON ERREUR ACTUELLE
+                    entity.Property(e => e.Telephone).HasColumnName("telephone");
+                    entity.Property(e => e.Email).HasColumnName("email");
+                    entity.Property(e => e.MotDePasse).HasColumnName("mot_de_passe");
+                    entity.Property(e => e.Type).HasColumnName("type");
+                });
 
             // 5. COMMANDE (Correction ID_ZONE, ID_CLIENT, ID_GESTIONNAIRE)
             modelBuilder.Entity<Commande>(entity =>
