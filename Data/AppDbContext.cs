@@ -50,7 +50,7 @@ namespace BrasilBurger.Web.Data
             });
 
             // 4. CLIENT
-           // 4. CLIENT (Correction de la casse pour PostgreSQL)
+                        // // 4. CLIENT (Correction de la casse pour PostgreSQL)
                 modelBuilder.Entity<Client>(entity =>
                 {
                     entity.ToTable("client");
