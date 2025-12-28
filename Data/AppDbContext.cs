@@ -40,11 +40,20 @@ namespace BrasilBurger.Web.Data
             });
 
             // 3. MENU
+            // 3. MENU (Correction complète des colonnes pour PostgreSQL)
             modelBuilder.Entity<Menu>(entity =>
             {
                 entity.ToTable("menu");
+                entity.HasKey(e => e.Id);
+                
+                // On force chaque propriété en minuscules pour correspondre à Neon
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Nom).HasColumnName("nom");
+                entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.EtatStock).HasColumnName("etatstock");
                 entity.Property(e => e.UrlImage).HasColumnName("url_image");
                 entity.Property(e => e.PrixTotal).HasColumnName("prix_total");
+                
                 entity.Ignore(e => e.Burger);
                 entity.Ignore(e => e.Complements);
             });
