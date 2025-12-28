@@ -94,7 +94,7 @@ namespace BrasilBurger.Web.Data
                 entity.Ignore(e => e.CommandeMenus);
             });
 
-            // 6. COMMANDE_BURGER
+            
             modelBuilder.Entity<CommandeBurger>(entity =>
             {
                 entity.ToTable("commande_burger");
@@ -106,7 +106,7 @@ namespace BrasilBurger.Web.Data
                 entity.Ignore(e => e.Burger);
             });
 
-            // 7. COMMANDE_MENU
+           
             modelBuilder.Entity<CommandeMenu>(entity =>
             {
                 entity.ToTable("commande_menu");
