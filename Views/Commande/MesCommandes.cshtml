@@ -1,0 +1,97 @@
+@model MesCommandesViewModel
+@{
+    ViewData["Title"] = "Mes Commandes";
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">
+        <i class="fas fa-list"></i> Mes Commandes
+    </h1>
+
+    @if (!Model.Commandes.Any())
+    {
+        <div class="alert alert-info text-center">
+            <h4>Vous n'avez pas encore de commandes</h4>
+            <a href="/Catalogue" class="btn btn-danger mt-3">
+                <i class="fas fa-utensils"></i> Commander maintenant
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var commande in Model.Commandes)
+            {
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">Commande N° @commande.Id</h5>
+                                <small class="text-muted">@commande.Date.ToString("dd/MM/yyyy HH:mm")</small>
+                            </div>
+                            <div>
+                                @{
+                                    var etatClass = commande.EtatCmd switch
+                                    {
+                                        "NonTraiter" => "bg-secondary",
+                                        "Encours_Preparation" => "bg-warning",
+                                        "Terminer" => "bg-success",
+                                        "EnCours_Livraison" => "bg-info",
+                                        "Livrer" => "bg-primary",
+                                        _ => "bg-secondary"
+                                    };
+
+                                    var etatTexte = commande.EtatCmd switch
+                                    {
+                                        "NonTraiter" => "Non traitée",
+                                        "Encours_Preparation" => "En préparation",
+                                        "Terminer" => "Terminée",
+                                        "EnCours_Livraison" => "En livraison",
+                                        "Livrer" => "Livrée",
+                                        _ => commande.EtatCmd
+                                    };
+                                }
+                                <span class="badge @etatClass">@etatTexte</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p><strong>Mode de consommation :</strong> 
+                                        @(commande.LieuConsommation == "SurPlace" ? "Sur place" : 
+                                          commande.LieuConsommation == "Emporter" ? "À emporter" : "Livraison")
+                                    </p>
+                                    @if (commande.Items.Any())
+                                    {
+                                        <p><strong>Articles :</strong></p>
+                                        <ul>
+                                            @foreach (var item in commande.Items)
+                                            {
+                                                <li>@item.Nom x @item.Quantite</li>
+                                            }
+                                        </ul>
+                                    }
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <h4 class="text-danger">@commande.MontantTotal FCFA</h4>
+                                    @if (commande.EstPayee)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check"></i> Payée
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fas fa-exclamation"></i> Payée
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,286 @@
+@model ValiderCommandeViewModel
+@{
+    ViewData["Title"] = "Valider ma commande";
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">
+        <i class="fas fa-check-circle"></i> Valider ma commande
+    </h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="fas fa-shopping-bag"></i> Récapitulatif</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var item in Model.Panier.Items)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>@item.Nom x @item.Quantite</span>
+                            <strong>@item.Total FCFA</strong>
+                        </div>
+                    }
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h5>Sous-total :</h5>
+                        <h5 class="text-danger" id="sous-total">@Model.Panier.Total FCFA</h5>
+                    </div>
+                    <div class="d-flex justify-content-between" id="frais-container" style="display: none;">
+                        <h6>Frais de livraison :</h6>
+                        <h6 class="text-warning" id="frais-livraison">0 FCFA</h6>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <h4>Total à payer :</h4>
+                        <h4 class="text-danger" id="total-final">@Model.Panier.Total FCFA</h4>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" action="/Commande/Confirmer" id="form-commande">
+                <!-- Champs cachés ESSENTIELS -->
+                <input type="hidden" name="FraisLivraison" id="input-frais" value="0" />
+                <input type="hidden" name="IdZone" id="input-zone" value="" />
+
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5><i class="fas fa-map-marker-alt"></i> Mode de consommation</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check mb-3">
+                            <input class="form-check-input mode-radio" type="radio" name="LieuConsommation" 
+                                   value="SurPlace" id="surplace" checked>
+                            <label class="form-check-label" for="surplace">
+                                <strong>Sur place</strong> - Consommer au restaurant
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input mode-radio" type="radio" name="LieuConsommation" 
+                                   value="Emporter" id="emporter">
+                            <label class="form-check-label" for="emporter">
+                                <strong>À emporter</strong> - Récupérer la commande
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input mode-radio" type="radio" name="LieuConsommation" 
+                                   value="Livraison" id="livraison">
+                            <label class="form-check-label" for="livraison">
+                                <strong>Livraison</strong> - Se faire livrer
+                            </label>
+                        </div>
+
+                        <!-- Section Livraison -->
+                        <div id="section-livraison" style="display: none;">
+                            <hr>
+                            <h6 class="mb-3">📍 Informations de livraison</h6>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Adresse complète * <small class="text-muted">(Numéro, rue, repères...)</small></label>
+                                <textarea name="AdresseLivraison" id="adresse-livraison" class="form-control" rows="3" 
+                                          placeholder="Ex: Villa 25, Rue 10, Face à la station Total, près de l'école...">@Model.AdresseLivraison</textarea>
+                                <small class="form-text text-muted">
+                                    Cette adresse aidera le livreur à vous trouver facilement
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Quartier * <small class="text-muted">(Pour calculer les frais de livraison)</small></label>
+                                <select class="form-select" id="select-quartier" name="QuartierNom">
+                                    <option value="" data-zone="" data-frais="0">-- Choisir votre quartier --</option>
+                                    <optgroup label="Zone 1 - 1500 FCFA (Centre-ville)">
+                                        <option value="Plateau" data-zone="1" data-frais="1500">Plateau</option>
+                                        <option value="Médina" data-zone="1" data-frais="1500">Médina</option>
+                                        <option value="Point E" data-zone="1" data-frais="1500">Point E</option>
+                                        <option value="HLM" data-zone="1" data-frais="1500">HLM</option>
+                                        <option value="Colobane" data-zone="1" data-frais="1500">Colobane</option>
+                                    </optgroup>
+                                    <optgroup label="Zone 2 - 2000 FCFA (Zones intermédiaires)">
+                                        <option value="Sicap Liberté" data-zone="2" data-frais="2000">Sicap Liberté</option>
+                                        <option value="Mermoz" data-zone="2" data-frais="2000">Mermoz</option>
+                                        <option value="Fann" data-zone="2" data-frais="2000">Fann</option>
+                                        <option value="Amitié" data-zone="2" data-frais="2000">Amitié</option>
+                                        <option value="Sacré-Coeur" data-zone="2" data-frais="2000">Sacré-Coeur</option>
+                                        <option value="Dieuppeul" data-zone="2" data-frais="2000">Dieuppeul</option>
+                                    </optgroup>
+                                    <optgroup label="Zone 3 - 2500 FCFA (Zones éloignées)">
+                                        <option value="Ouakam" data-zone="3" data-frais="2500">Ouakam</option>
+                                        <option value="Yoff" data-zone="3" data-frais="2500">Yoff</option>
+                                        <option value="Ngor" data-zone="3" data-frais="2500">Ngor</option>
+                                        <option value="Parcelles Assainies" data-zone="3" data-frais="2500">Parcelles Assainies</option>
+                                        <option value="Grand Yoff" data-zone="3" data-frais="2500">Grand Yoff</option>
+                                    </optgroup>
+                                    <optgroup label="Zone 4 - 3000 FCFA (Zones très éloignées)">
+                                        <option value="Almadies" data-zone="4" data-frais="3000">Almadies</option>
+                                        <option value="Golf Sud" data-zone="4" data-frais="3000">Golf Sud</option>
+                                        <option value="Keur Massar" data-zone="4" data-frais="3000">Keur Massar</option>
+                                        <option value="Pikine" data-zone="4" data-frais="3000">Pikine</option>
+                                        <option value="Guédiawaye" data-zone="4" data-frais="3000">Guédiawaye</option>
+                                        <option value="Thiaroye" data-zone="4" data-frais="3000">Thiaroye</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="alert alert-info" id="alert-frais" style="display: none;">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Frais de livraison :</strong> <span id="text-frais">0</span> FCFA
+                                <br>
+                                <small>Les frais varient selon la zone de livraison</small>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <i class="fas fa-phone"></i>
+                                <strong>Le livreur vous contactera</strong> au numéro associé à votre compte avant la livraison.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-danger btn-lg w-100 mt-4" id="btn-confirmer">
+                    <i class="fas fa-arrow-right"></i> Confirmer et payer
+                </button>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">📋 Informations</h5>
+                    <hr>
+                    <p><i class="fas fa-clock"></i> <strong>Délai :</strong></p>
+                    <ul>
+                        <li>Sur place : 15-20 min</li>
+                        <li>À emporter : 20-25 min</li>
+                        <li>Livraison : 30-45 min</li>
+                    </ul>
+                    <p><i class="fas fa-credit-card"></i> <strong>Paiement :</strong></p>
+                    <ul>
+                        <li>Wave</li>
+                        <li>Orange Money</li>
+                    </ul>
+                    <p><i class="fas fa-map"></i> <strong>Zones de livraison :</strong></p>
+                    <a href="/Livraison/Zones" target="_blank" class="btn btn-sm btn-outline-danger w-100">
+                        Voir toutes les zones
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const sousTotal = @Model.Panier.Total;
+        console.log('💰 Sous-total initial:', sousTotal, 'FCFA');
+
+        // Gestion du changement de mode de consommation
+        document.querySelectorAll('.mode-radio').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const sectionLivraison = document.getElementById('section-livraison');
+                const fraisContainer = document.getElementById('frais-container');
+                const adresseInput = document.getElementById('adresse-livraison');
+                const quartierSelect = document.getElementById('select-quartier');
+                
+                console.log('📍 Mode sélectionné:', this.value);
+                
+                if (this.value === 'Livraison') {
+                    sectionLivraison.style.display = 'block';
+                    fraisContainer.style.display = 'flex';
+                    adresseInput.required = true;
+                    quartierSelect.required = true;
+                } else {
+                    sectionLivraison.style.display = 'none';
+                    fraisContainer.style.display = 'none';
+                    adresseInput.required = false;
+                    quartierSelect.required = false;
+                    adresseInput.value = '';
+                    quartierSelect.selectedIndex = 0;
+                    
+                    // Réinitialiser les champs cachés
+                    document.getElementById('input-frais').value = '0';
+                    document.getElementById('input-zone').value = '';
+                    
+                    updateTotal(0);
+                }
+            });
+        });
+
+        // Gestion de la sélection du quartier
+        document.getElementById('select-quartier').addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const frais = parseFloat(selectedOption.getAttribute('data-frais')) || 0;
+            const zone = selectedOption.getAttribute('data-zone') || '';
+
+            console.log('🏘️ Quartier sélectionné:', selectedOption.value);
+            console.log('💵 Frais:', frais, 'FCFA');
+            console.log('🗺️ Zone:', zone);
+
+            // Mettre à jour les champs cachés
+            document.getElementById('input-frais').value = frais;
+            document.getElementById('input-zone').value = zone;
+            
+            console.log('✅ input-frais mis à jour:', document.getElementById('input-frais').value);
+            console.log('✅ input-zone mis à jour:', document.getElementById('input-zone').value);
+            
+            if (frais > 0) {
+                document.getElementById('alert-frais').style.display = 'block';
+                document.getElementById('text-frais').textContent = frais;
+                updateTotal(frais);
+            } else {
+                document.getElementById('alert-frais').style.display = 'none';
+                updateTotal(0);
+            }
+        });
+
+        // Mise à jour du total affiché
+        function updateTotal(frais) {
+            const total = sousTotal + frais;
+            document.getElementById('frais-livraison').textContent = frais + ' FCFA';
+            document.getElementById('total-final').textContent = total + ' FCFA';
+            console.log('📊 Total mis à jour:', total, 'FCFA (Sous-total:', sousTotal, '+ Frais:', frais, ')');
+        }
+
+        // Validation avant soumission
+        document.getElementById('form-commande').addEventListener('submit', function(e) {
+            const livraisonChecked = document.getElementById('livraison').checked;
+            
+            console.log('📤 Soumission du formulaire...');
+            console.log('Mode livraison:', livraisonChecked);
+            
+            if (livraisonChecked) {
+                const adresse = document.getElementById('adresse-livraison').value.trim();
+                const quartier = document.getElementById('select-quartier').value;
+                const frais = document.getElementById('input-frais').value;
+                const zone = document.getElementById('input-zone').value;
+                
+                console.log('Adresse:', adresse);
+                console.log('Quartier:', quartier);
+                console.log('Frais à envoyer:', frais);
+                console.log('Zone à envoyer:', zone);
+                
+                if (!adresse || adresse.length < 10) {
+                    e.preventDefault();
+                    alert('Veuillez saisir une adresse complète (minimum 10 caractères)');
+                    return false;
+                }
+                
+                if (!quartier) {
+                    e.preventDefault();
+                    alert('Veuillez sélectionner votre quartier');
+                    return false;
+                }
+                
+                if (!zone || zone === '') {
+                    e.preventDefault();
+                    alert('Erreur: La zone n\'a pas été détectée. Veuillez re-sélectionner votre quartier.');
+                    return false;
+                }
+            }
+            
+            console.log('✅ Validation OK, envoi du formulaire...');
+        });
+    </script>
+}

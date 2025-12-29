@@ -1,0 +1,83 @@
+@model PaiementViewModel
+@{
+    ViewData["Title"] = "Paiement";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white text-center">
+                    <h3><i class="fas fa-credit-card"></i> Paiement</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>Montant à payer :</strong> 
+                        <span class="h4 text-danger">@Model.Montant FCFA</span>
+                    </div>
+
+                    <form method="post" action="/Paiement/Traiter">
+                        <input type="hidden" name="IdCommande" value="@Model.IdCommande" />
+                        <input type="hidden" name="Montant" value="@Model.Montant" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Choisissez votre mode de paiement</label>
+
+                            <div class="form-check mb-3 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="ModePaiement" 
+                                       value="Wave" id="wave" checked>
+                                <label class="form-check-label w-100" for="wave">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary text-white rounded p-2 me-3">
+                                            <i class="fas fa-mobile-alt fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <strong>Wave</strong>
+                                            <p class="text-muted mb-0">Paiement mobile Wave</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-3 p-3 border rounded">
+                                <input class="form-check-input" type="radio" name="ModePaiement" 
+                                       value="Orange_Money" id="om">
+                                <label class="form-check-label w-100" for="om">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-warning text-dark rounded p-2 me-3">
+                                            <i class="fas fa-mobile-alt fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <strong>Orange Money</strong>
+                                            <p class="text-muted mb-0">Paiement mobile Orange Money</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Numéro de téléphone (optionnel)</label>
+                            <input type="tel" name="NumeroTelephone" class="form-control" 
+                                   placeholder="77 123 45 67">
+                            <small class="text-muted">Pour confirmation de paiement</small>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle"></i> 
+                            <strong>Note :</strong> Ceci est une simulation de paiement.
+                        </div>
+
+                        <button type="submit" class="btn btn-danger btn-lg w-100">
+                            <i class="fas fa-check"></i> Confirmer le paiement
+                        </button>
+                    </form>
+
+                    <a href="/Commande/Panier" class="btn btn-outline-secondary mt-3 w-100">
+                        <i class="fas fa-arrow-left"></i> Retour au panier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

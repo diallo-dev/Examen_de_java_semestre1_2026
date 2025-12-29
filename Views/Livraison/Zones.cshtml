@@ -1,0 +1,94 @@
+@model LivraisonViewModel
+@{
+    ViewData["Title"] = "Zones de Livraison";
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">
+        <i class="fas fa-map-marked-alt"></i> Zones de Livraison
+    </h1>
+
+    @if (!Model.Zones.Any())
+    {
+        <div class="alert alert-info text-center">
+            <h4>Aucune zone de livraison configurée</h4>
+            <p>Les zones seront ajoutées prochainement</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var zone in Model.Zones)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-location-arrow"></i> Zone @zone.Id
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <strong>Frais de livraison :</strong>
+                                <span class="h4 text-danger">@zone.PrixLivraison FCFA</span>
+                            </div>
+
+                            <div>
+                                <strong>Quartiers couverts :</strong>
+                                @if (zone.Quartiers.Any())
+                                {
+                                    <ul class="list-group mt-2">
+                                        @foreach (var quartier in zone.Quartiers.OrderBy(q => q.Nom))
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                @quartier.Nom
+                                                <span class="badge bg-primary">Zone @zone.Id</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted mt-2">Aucun quartier associé</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Carte récapitulative -->
+        <div class="card mt-4 bg-light">
+            <div class="card-body">
+                <h5>📍 Tous les quartiers disponibles</h5>
+                <div class="row mt-3">
+                    @foreach (var quartier in Model.Quartiers.OrderBy(q => q.Nom))
+                    {
+                        <div class="col-md-3 mb-2">
+                            <div class="badge bg-secondary w-100 p-2">
+                                @quartier.Nom
+                                @if (quartier.Zone != null)
+                                {
+                                    <span class="text-warning">(@quartier.Zone.PrixLivraison FCFA)</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a href="/Catalogue" class="btn btn-outline-danger">
+            <i class="fas fa-arrow-left"></i> Retour au catalogue
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        console.log('🗺️ Zones de livraison chargées');
+    </script>
+}
