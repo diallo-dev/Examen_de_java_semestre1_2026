@@ -11,7 +11,6 @@ namespace BrasilBurger.Web.Entity
         [Column("prix_livraison")]
         public double PrixLivraison { get; set; }
         
-        // Navigation properties
         public List<Quartier> Quartiers { get; set; } = new();
     }
 }

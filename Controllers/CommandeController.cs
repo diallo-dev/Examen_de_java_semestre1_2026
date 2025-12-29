@@ -28,16 +28,17 @@ namespace BrasilBurger.Web.Controllers
             _clientService = clientService;
         }
 
-        public IActionResult Panier()
-        {
-            var items = PanierHelper.GetPanier(HttpContext.Session);
-            var viewModel = new PanierViewModel
-            {
-                Items = items
-            };
-            return View(viewModel);
-        }
+ public IActionResult Panier()
+{
+    var items = PanierHelper.GetPanier(HttpContext.Session) ?? new List<ItemPanier>();
+    
+    var viewModel = new PanierViewModel
+    {
+        Items = items
+    };
 
+    return View(viewModel);
+}
         [HttpPost]
         public IActionResult RetirerItem(int id, string type)
         {

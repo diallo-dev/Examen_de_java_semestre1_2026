@@ -18,35 +18,35 @@ namespace BrasilBurger.Web.ViewModels
 
     public class InscriptionViewModel
     {
-        public string Nom { get; set; }
-        public string Prenom { get; set; }
-        public string Email { get; set; }
-        public string MotDePasse { get; set; }
-        public string ConfirmationMotDePasse { get; set; }
+        public string Nom { get; set; } = "";
+        public string Prenom { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string MotDePasse { get; set; } = "";
+        public string ConfirmationMotDePasse { get; set; } = "";
         public string? Telephone { get; set; }
         public string? Adresse { get; set; }
     }
 
     public class ConnexionViewModel
     {
-        public string Email { get; set; }
-        public string MotDePasse { get; set; }
+        public string Email { get; set; } = "";
+        public string MotDePasse { get; set; } = "";
     }
 
-    // Item du panier
+    // UNE SEULE DÉFINITION DE ITEMPANIER ICI
     public class ItemPanier
     {
         public int Id { get; set; }
-        public string Type { get; set; }
-        public string Nom { get; set; }
+        public string Type { get; set; } = ""; // "burger" ou "menu"
+        public string Nom { get; set; } = "";
         public double Prix { get; set; }
         public int Quantite { get; set; }
         public string? UrlImage { get; set; }
         public List<Complement> Complements { get; set; } = new();
-        
         public double Total => Prix * Quantite;
     }
 
+    // UNE SEULE DÉFINITION DE PANIERVIEWMODEL ICI
     public class PanierViewModel
     {
         public List<ItemPanier> Items { get; set; } = new();
@@ -56,7 +56,7 @@ namespace BrasilBurger.Web.ViewModels
 
     public class ValiderCommandeViewModel
     {
-        public PanierViewModel Panier { get; set; }
+        public PanierViewModel Panier { get; set; } = new();
         public string LieuConsommation { get; set; } = "SurPlace";
         public string? AdresseLivraison { get; set; }
         public string? QuartierNom { get; set; }
@@ -81,9 +81,9 @@ namespace BrasilBurger.Web.ViewModels
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }
-        public string EtatCmd { get; set; }
+        public string EtatCmd { get; set; } = "";
         public double MontantTotal { get; set; }
-        public string LieuConsommation { get; set; }
+        public string LieuConsommation { get; set; } = "";
         public List<ItemPanier> Items { get; set; } = new();
         public bool EstPayee { get; set; }
     }
