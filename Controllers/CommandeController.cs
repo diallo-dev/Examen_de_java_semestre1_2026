@@ -28,17 +28,51 @@ namespace BrasilBurger.Web.Controllers
             _clientService = clientService;
         }
 
-        // ACCÈS AU PANIER (ROUTE FORCÉE POUR ÉVITER LES ERREURS 404)
+        [HttpPost]
+        public async Task<IActionResult> AjouterBurger(int id, int quantite)
+        {
+            var burger = await _burgerService.TrouverParIdAsync(id);
+            if (burger != null)
+            {
+                var item = new ItemPanier
+                {
+                    Id = burger.Id,
+                    Nom = burger.Nom,
+                    Prix = burger.Prix, // Pour Burger, c'est bien .Prix
+                    Quantite = quantite > 0 ? quantite : 1,
+                    UrlImage = burger.UrlImage,
+                    Type = "burger"
+                };
+                PanierHelper.AjouterItem(HttpContext.Session, item);
+            }
+            return RedirectToAction("Panier");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AjouterMenu(int id, int quantite)
+        {
+            var menu = await _menuService.TrouverParIdAsync(id);
+            if (menu != null)
+            {
+                var item = new ItemPanier
+                {
+                    Id = menu.Id,
+                    Nom = menu.Nom,
+                    Prix = menu.PrixTotal, // FIX: Utilisation de PrixTotal ici
+                    Quantite = quantite > 0 ? quantite : 1,
+                    UrlImage = menu.UrlImage,
+                    Type = "menu"
+                };
+                PanierHelper.AjouterItem(HttpContext.Session, item);
+            }
+            return RedirectToAction("Panier");
+        }
+
         [Route("Commande/Panier")]
         public IActionResult Panier()
         {
             var items = PanierHelper.GetPanier(HttpContext.Session) ?? new List<ItemPanier>();
-            
-            var viewModel = new PanierViewModel
-            {
-                Items = items
-            };
-
+            var viewModel = new PanierViewModel { Items = items };
             return View(viewModel);
         }
 
@@ -66,20 +100,18 @@ namespace BrasilBurger.Web.Controllers
             }
 
             var items = PanierHelper.GetPanier(HttpContext.Session);
-            if (!items.Any())
+            if (items == null || !items.Any())
             {
                 TempData["ErrorMessage"] = "Votre panier est vide";
                 return RedirectToAction("Index", "Catalogue");
             }
 
             var client = await _clientService.TrouverParIdAsync(clientId.Value);
-            
             var viewModel = new ValiderCommandeViewModel
             {
                 Panier = new PanierViewModel { Items = items },
                 AdresseLivraison = client?.Adresse
             };
-
             return View(viewModel);
         }
 
@@ -94,35 +126,13 @@ namespace BrasilBurger.Web.Controllers
             }
 
             var items = PanierHelper.GetPanier(HttpContext.Session);
-            if (!items.Any())
+            if (items == null || !items.Any())
             {
                 TempData["ErrorMessage"] = "Votre panier est vide";
                 return RedirectToAction("Index", "Catalogue");
             }
 
-            double fraisLivraison = 0;
-            int? idZone = null;
-            string? adresse = null;
-
-            if (model.LieuConsommation == "Livraison")
-            {
-                if (string.IsNullOrWhiteSpace(model.AdresseLivraison))
-                {
-                    TempData["ErrorMessage"] = "L'adresse de livraison est obligatoire";
-                    return RedirectToAction("Valider");
-                }
-
-                if (!model.IdZone.HasValue)
-                {
-                    TempData["ErrorMessage"] = "Veuillez sélectionner votre quartier";
-                    return RedirectToAction("Valider");
-                }
-
-                fraisLivraison = model.FraisLivraison;
-                idZone = model.IdZone;
-                adresse = model.AdresseLivraison;
-            }
-
+            double fraisLivraison = model.LieuConsommation == "Livraison" ? model.FraisLivraison : 0;
             double sousTotal = items.Sum(i => i.Total);
             double montantTotal = sousTotal + fraisLivraison;
 
@@ -134,40 +144,27 @@ namespace BrasilBurger.Web.Controllers
                 LieuConsommation = model.LieuConsommation,
                 MontantTotal = montantTotal,
                 FraisLivraison = fraisLivraison,
-                IdZone = idZone
+                IdZone = model.IdZone
             };
 
             try
             {
                 var commandeCreee = await _commandeService.CreerCommandeAsync(commande);
 
-                if (!string.IsNullOrEmpty(adresse))
+                foreach (var item in items)
                 {
-                    var client = await _clientService.TrouverParIdAsync(clientId.Value);
-                    if (client != null)
+                    if (item.Type == "burger")
                     {
-                        client.Adresse = adresse;
+                        await _commandeService.AjouterCommandeBurgerAsync(new CommandeBurger {
+                            IdCommande = commandeCreee.Id, IdBurger = item.Id, Quantite = item.Quantite, PrixUnitaire = item.Prix
+                        });
                     }
-                }
-
-                foreach (var item in items.Where(i => i.Type == "burger"))
-                {
-                    await _commandeService.AjouterCommandeBurgerAsync(new CommandeBurger {
-                        IdCommande = commandeCreee.Id,
-                        IdBurger = item.Id,
-                        Quantite = item.Quantite,
-                        PrixUnitaire = item.Prix
-                    });
-                }
-
-                foreach (var item in items.Where(i => i.Type == "menu"))
-                {
-                    await _commandeService.AjouterCommandeMenuAsync(new CommandeMenu {
-                        IdCommande = commandeCreee.Id,
-                        IdMenu = item.Id,
-                        Quantite = item.Quantite,
-                        PrixUnitaire = item.Prix
-                    });
+                    else if (item.Type == "menu")
+                    {
+                        await _commandeService.AjouterCommandeMenuAsync(new CommandeMenu {
+                            IdCommande = commandeCreee.Id, IdMenu = item.Id, Quantite = item.Quantite, PrixUnitaire = item.Prix
+                        });
+                    }
                 }
 
                 PanierHelper.ViderPanier(HttpContext.Session);
@@ -183,53 +180,18 @@ namespace BrasilBurger.Web.Controllers
         public async Task<IActionResult> MesCommandes()
         {
             var clientId = HttpContext.Session.GetInt32("ClientId");
-            if (!clientId.HasValue)
-            {
-                return RedirectToAction("Connexion", "Auth");
-            }
+            if (!clientId.HasValue) return RedirectToAction("Connexion", "Auth");
 
             var commandes = await _commandeService.ListerCommandesClientAsync(clientId.Value);
             var viewModel = new MesCommandesViewModel();
 
             foreach (var cmd in commandes)
             {
-                var commandeDetail = new CommandeDetailViewModel
-                {
-                    Id = cmd.Id,
-                    Date = cmd.Date,
-                    EtatCmd = cmd.EtatCmd,
-                    MontantTotal = cmd.MontantTotal,
-                    LieuConsommation = cmd.LieuConsommation
+                var detail = new CommandeDetailViewModel {
+                    Id = cmd.Id, Date = cmd.Date, EtatCmd = cmd.EtatCmd, MontantTotal = cmd.MontantTotal, LieuConsommation = cmd.LieuConsommation
                 };
-
-                var burgers = await _commandeService.GetBurgersCommandeAsync(cmd.Id);
-                foreach (var cb in burgers)
-                {
-                    var burger = await _burgerService.TrouverParIdAsync(cb.IdBurger);
-                    if (burger != null)
-                    {
-                        commandeDetail.Items.Add(new ItemPanier {
-                            Id = burger.Id, Nom = burger.Nom, Prix = cb.PrixUnitaire, Quantite = cb.Quantite, UrlImage = burger.UrlImage, Type = "burger"
-                        });
-                    }
-                }
-
-                var menus = await _commandeService.GetMenusCommandeAsync(cmd.Id);
-                foreach (var cm in menus)
-                {
-                    var menu = await _menuService.TrouverParIdAsync(cm.IdMenu);
-                    if (menu != null)
-                    {
-                        commandeDetail.Items.Add(new ItemPanier {
-                            Id = menu.Id, Nom = menu.Nom, Prix = cm.PrixUnitaire, Quantite = cm.Quantite, UrlImage = menu.UrlImage, Type = "menu"
-                        });
-                    }
-                }
-
-                commandeDetail.EstPayee = await _commandeService.EstPayeeAsync(cmd.Id);
-                viewModel.Commandes.Add(commandeDetail);
+                viewModel.Commandes.Add(detail);
             }
-
             return View(viewModel);
         }
     }
