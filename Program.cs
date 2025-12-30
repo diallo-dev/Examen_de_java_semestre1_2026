@@ -57,6 +57,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+builder.Services.AddDataProtection();
 
 if (!app.Environment.IsDevelopment())
 {
