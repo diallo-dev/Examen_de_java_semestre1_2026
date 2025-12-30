@@ -1,4 +1,4 @@
-@model DetailsViewModel
+@model BrasilBurger.Web.ViewModels.DetailsViewModel
 @{
     ViewData["Title"] = Model.Menu?.Nom;
 }
@@ -8,7 +8,7 @@
         <div class="col-md-6">
             @if (!string.IsNullOrEmpty(Model.Menu?.UrlImage))
             {
-                <img src="@Model.Menu.UrlImage" class="img-fluid rounded shadow" alt="@Model.Menu.Nom">
+                <img src="@Model.Menu.UrlImage" class="img-fluid rounded shadow w-100" alt="@Model.Menu.Nom">
             }
             else
             {
@@ -18,46 +18,58 @@
             }
         </div>
         <div class="col-md-6">
-            <span class="badge bg-warning text-dark mb-2">MENU COMPLET</span>
+            <span class="badge bg-warning text-dark mb-2 shadow-sm">MENU COMPLET</span>
             <h1 class="display-4">@Model.Menu?.Nom</h1>
             <p class="lead text-muted">@Model.Menu?.Description</p>
 
-            <div class="card mb-3">
+            <div class="card mb-4 border-warning shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title">Contenu du menu :</h5>
-                    <ul class="list-unstyled">
+                    <h5 class="card-title text-warning fw-bold">
+                        <i class="fas fa-concierge-bell me-2"></i>Contenu du menu :
+                    </h5>
+                    <ul class="list-unstyled mt-3">
                         @if (Model.Menu?.Burger != null)
                         {
-                            <li><i class="fas fa-check text-success"></i> <strong>Burger :</strong> @Model.Menu.Burger.Nom</li>
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Burger :</strong> @Model.Menu.Burger.Nom
+                            </li>
                         }
                         @if (Model.Menu?.Complements != null && Model.Menu.Complements.Any())
                         {
                             foreach (var complement in Model.Menu.Complements)
                             {
-                                <li><i class="fas fa-check text-success"></i> @complement.Nom</li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    @complement.Nom
+                                </li>
                             }
                         }
                     </ul>
                 </div>
             </div>
 
-            <h2 class="text-danger">@Model.Menu?.PrixTotal FCFA</h2>
+            <h2 class="text-danger fw-bold mb-4">@Model.Menu?.PrixTotal FCFA</h2>
 
             <form method="post" action="/Commande/AjouterMenu">
+                @* Important : l'ID du menu *@
                 <input type="hidden" name="id" value="@Model.Menu?.Id" />
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Quantité</label>
-                    <input type="number" name="quantite" class="form-control" value="1" min="1" max="10">
+                <div class="row align-items-center mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Quantité</label>
+                        <input type="number" name="quantite" class="form-control form-control-lg" value="1" min="1" max="10">
+                    </div>
+                    <div class="col-md-8 pt-4">
+                        <button type="submit" class="btn btn-warning btn-lg w-100 shadow fw-bold">
+                            <i class="fas fa-shopping-cart me-2"></i> Ajouter le menu au panier
+                        </button>
+                    </div>
                 </div>
-
-                <button type="submit" class="btn btn-warning btn-lg w-100">
-                    <i class="fas fa-shopping-cart"></i> Ajouter au panier
-                </button>
             </form>
 
-            <a href="/Catalogue" class="btn btn-outline-secondary mt-3 w-100">
-                <i class="fas fa-arrow-left"></i> Retour au catalogue
+            <a href="/Catalogue" class="btn btn-outline-secondary w-100">
+                <i class="fas fa-arrow-left me-2"></i> Retour au catalogue
             </a>
         </div>
     </div>

@@ -1,4 +1,4 @@
-@model DetailsViewModel
+@model BrasilBurger.Web.ViewModels.DetailsViewModel
 @{
     ViewData["Title"] = Model.Burger?.Nom;
 }
@@ -8,7 +8,7 @@
         <div class="col-md-6">
             @if (!string.IsNullOrEmpty(Model.Burger?.UrlImage))
             {
-                <img src="@Model.Burger.UrlImage" class="img-fluid rounded shadow" alt="@Model.Burger.Nom">
+                <img src="@Model.Burger.UrlImage" class="img-fluid rounded shadow w-100" alt="@Model.Burger.Nom">
             }
             else
             {
@@ -18,42 +18,60 @@
             }
         </div>
         <div class="col-md-6">
+            <span class="badge bg-danger mb-2">BURGER SOLO</span>
             <h1 class="display-4">@Model.Burger?.Nom</h1>
             <p class="lead text-muted">@Model.Burger?.Description</p>
-            <h2 class="text-danger">@Model.Burger?.Prix FCFA</h2>
+            <h2 class="text-danger mb-4">@Model.Burger?.Prix FCFA</h2>
 
             <form method="post" action="/Commande/AjouterBurger">
+                @* Champ caché pour l'ID du Burger *@
                 <input type="hidden" name="id" value="@Model.Burger?.Id" />
 
-                <div class="mb-3">
+                <div class="mb-4">
                     <label class="form-label fw-bold">Quantité</label>
-                    <input type="number" name="quantite" class="form-control" value="1" min="1" max="10">
+                    <input type="number" name="quantite" class="form-control form-control-lg" value="1" min="1" max="10" style="width: 100px;">
                 </div>
 
-                @if (Model.ComplementsDisponibles.Any())
+                @if (Model.ComplementsDisponibles != null && Model.ComplementsDisponibles.Any())
                 {
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Compléments (optionnel)</label>
-                        @foreach (var complement in Model.ComplementsDisponibles)
-                        {
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="complementIds" value="@complement.Id" id="comp_@complement.Id">
-                                <label class="form-check-label" for="comp_@complement.Id">
-                                    @complement.Nom (+@complement.Prix FCFA)
-                                </label>
-                            </div>
-                        }
+                    <div class="mb-4">
+                        <label class="form-label fw-bold mb-3">Ajouter des compléments (optionnel) :</label>
+                        <div class="row">
+                            @foreach (var complement in Model.ComplementsDisponibles)
+                            {
+                                <div class="col-md-6 mb-2">
+                                    <div class="form-check p-2 border rounded shadow-sm hover-shadow" style="cursor: pointer;">
+                                        @* L'attribut name="complementIds" est crucial pour le CommandeController *@
+                                        <input class="form-check-input ms-1" type="checkbox" name="complementIds" value="@complement.Id" id="comp_@complement.Id">
+                                        <label class="form-check-label ms-4 d-block" for="comp_@complement.Id">
+                                            @complement.Nom 
+                                            <span class="d-block text-success small fw-bold">+@complement.Prix FCFA</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
                     </div>
                 }
 
-                <button type="submit" class="btn btn-danger btn-lg w-100">
-                    <i class="fas fa-shopping-cart"></i> Ajouter au panier
-                </button>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-danger btn-lg w-100 shadow">
+                        <i class="fas fa-shopping-cart me-2"></i> Ajouter au panier
+                    </button>
+                </div>
             </form>
 
             <a href="/Catalogue" class="btn btn-outline-secondary mt-3 w-100">
-                <i class="fas fa-arrow-left"></i> Retour au catalogue
+                <i class="fas fa-arrow-left me-2"></i> Retour au catalogue
             </a>
         </div>
     </div>
 </div>
+
+<style>
+    .hover-shadow:hover {
+        background-color: #f8f9fa;
+        border-color: #dc3545 !important;
+        transition: 0.3s;
+    }
+</style>

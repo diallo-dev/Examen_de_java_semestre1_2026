@@ -29,24 +29,44 @@ namespace BrasilBurger.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AjouterBurger(int id, int quantite)
+public async Task<IActionResult> AjouterBurger(int id, int quantite, List<int> complementIds)
+{
+    var burger = await _burgerService.TrouverParIdAsync(id);
+    if (burger != null)
+    {
+        // 1. On commence avec le prix de base du burger
+        double prixTotalUnitaire = burger.Prix;
+        List<Complement> complementsChoisis = new List<Complement>();
+
+        // 2. Si des compléments sont cochés, on les cherche et on ajoute leur prix
+        if (complementIds != null && complementIds.Any())
         {
-            var burger = await _burgerService.TrouverParIdAsync(id);
-            if (burger != null)
+            foreach (var compId in complementIds)
             {
-                var item = new ItemPanier
+                var complement = await _complementService.TrouverParIdAsync(compId);
+                if (complement != null)
                 {
-                    Id = burger.Id,
-                    Nom = burger.Nom,
-                    Prix = burger.Prix, // Pour Burger, c'est bien .Prix
-                    Quantite = quantite > 0 ? quantite : 1,
-                    UrlImage = burger.UrlImage,
-                    Type = "burger"
-                };
-                PanierHelper.AjouterItem(HttpContext.Session, item);
+                    prixTotalUnitaire += complement.Prix;
+                    complementsChoisis.Add(complement);
+                }
             }
-            return RedirectToAction("Panier");
         }
+
+        var item = new ItemPanier
+        {
+            Id = burger.Id,
+            Nom = burger.Nom,
+            Prix = prixTotalUnitaire,  
+            Quantite = quantite > 0 ? quantite : 1,
+            UrlImage = burger.UrlImage,
+            Type = "burger",
+            Complements = complementsChoisis  
+        };
+
+        PanierHelper.AjouterItem(HttpContext.Session, item);
+    }
+    return RedirectToAction("Panier");
+}
 
         [HttpPost]
         public async Task<IActionResult> AjouterMenu(int id, int quantite)
@@ -58,7 +78,7 @@ namespace BrasilBurger.Web.Controllers
                 {
                     Id = menu.Id,
                     Nom = menu.Nom,
-                    Prix = menu.PrixTotal, // FIX: Utilisation de PrixTotal ici
+                    Prix = menu.PrixTotal,
                     Quantite = quantite > 0 ? quantite : 1,
                     UrlImage = menu.UrlImage,
                     Type = "menu"
@@ -119,18 +139,10 @@ namespace BrasilBurger.Web.Controllers
         public async Task<IActionResult> Confirmer(ValiderCommandeViewModel model)
         {
             var clientId = HttpContext.Session.GetInt32("ClientId");
-            if (!clientId.HasValue)
-            {
-                TempData["ErrorMessage"] = "Vous devez être connecté pour passer commande";
-                return RedirectToAction("Connexion", "Auth");
-            }
+            if (!clientId.HasValue) return RedirectToAction("Connexion", "Auth");
 
             var items = PanierHelper.GetPanier(HttpContext.Session);
-            if (items == null || !items.Any())
-            {
-                TempData["ErrorMessage"] = "Votre panier est vide";
-                return RedirectToAction("Index", "Catalogue");
-            }
+            if (items == null || !items.Any()) return RedirectToAction("Index", "Catalogue");
 
             double fraisLivraison = model.LieuConsommation == "Livraison" ? model.FraisLivraison : 0;
             double sousTotal = items.Sum(i => i.Total);
