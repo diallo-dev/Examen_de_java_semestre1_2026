@@ -11,12 +11,11 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(10000);
+    options.ListenAnyIP(int.Parse(port));
 });
-// ------------------------------------------
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
@@ -58,13 +57,14 @@ var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseSession();
+
+app.UseSession(); 
 app.UseAuthorization();
 
 app.MapControllerRoute(
