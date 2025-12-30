@@ -5,16 +5,17 @@
 }
 
 <div class="container my-5">
-    <h2 class="mb-4"><i class="fas fa-shopping-basket"></i> Votre Panier</h2>
+    <h2 class="mb-4"><i class="fas fa-shopping-basket me-2"></i>Votre Panier</h2>
 
-    @* Vérification si le modèle ou la liste est null/vide *@
     @if (Model == null || Model.Items == null || !Model.Items.Any())
     {
-        <div class="alert alert-warning text-center shadow-sm p-5">
+        <div class="alert alert-warning text-center shadow-sm p-5 border-0 rounded-4">
             <i class="fas fa-cart-arrow-down fa-3x mb-3 text-muted"></i>
             <h4>Votre panier est vide.</h4>
-            <p>Découvrez nos délicieux burgers et menus pour commencer votre commande !</p>
-            <a href="/" class="btn btn-danger btn-lg mt-3">Retourner au catalogue</a>
+            <p class="text-muted">Découvrez nos délicieux burgers et menus pour commencer votre commande !</p>
+            <a href="/Catalogue" class="btn btn-danger btn-lg mt-3 px-5 shadow-sm">
+                <i class="fas fa-utensils me-2"></i>Retourner au catalogue
+            </a>
         </div>
     }
     else
@@ -23,33 +24,42 @@
             <div class="col-md-8">
                 @foreach (var item in Model.Items)
                 {
-                    <div class="card mb-3 shadow-sm border-0">
+                    <div class="card mb-3 shadow-sm border-0 rounded-3">
                         <div class="card-body">
                             <div class="row align-items-center">
-                                <div class="col-2">
+                                <div class="col-md-2 col-3">
                                     <img src="@(string.IsNullOrEmpty(item.UrlImage) ? "/img/default-burger.jpg" : item.UrlImage)" 
                                          class="img-fluid rounded shadow-sm" alt="@item.Nom">
                                 </div>
-                                <div class="col-4">
+                                <div class="col-md-4 col-9">
                                     <h5 class="mb-0 fw-bold">@item.Nom</h5>
-                                    <span class="badge bg-light text-dark border">@item.Type</span>
+                                    <span class="badge @(item.Type == "menu" ? "bg-warning text-dark" : "bg-light text-dark border") mb-1">
+                                        @item.Type.ToUpper()
+                                    </span>
                                     
-                                    @* Sécurité sur les compléments *@
+                                    @* Affichage détaillé des compléments choisis *@
                                     @if(item.Complements != null && item.Complements.Any()){
-                                        <div class="small text-success mt-1">
-                                            <i class="fas fa-plus-circle"></i> @string.Join(", ", item.Complements.Select(c => c.Nom))
+                                        <div class="mt-1">
+                                            @foreach(var comp in item.Complements)
+                                            {
+                                                <span class="d-block small text-success">
+                                                    <i class="fas fa-plus me-1"></i> @comp.Nom
+                                                </span>
+                                            }
                                         </div>
                                     }
                                 </div>
-                                <div class="col-3 text-center">
-                                    <span class="fw-bold">@item.Quantite</span> <small class="text-muted">x</small> <span>@item.Prix FCFA</span>
+                                <div class="col-md-3 col-6 text-center mt-md-0 mt-3">
+                                    <span class="fw-bold">@item.Quantite</span> 
+                                    <small class="text-muted mx-1">x</small> 
+                                    <span class="text-dark">@item.Prix FCFA</span>
                                 </div>
-                                <div class="col-3 text-end">
+                                <div class="col-md-3 col-6 text-end mt-md-0 mt-3">
                                     <form asp-controller="Commande" asp-action="RetirerItem" method="post">
                                         <input type="hidden" name="id" value="@item.Id" />
                                         <input type="hidden" name="type" value="@item.Type" />
-                                        <button type="submit" class="btn btn-link text-danger p-0 text-decoration-none">
-                                            <i class="fas fa-trash-alt"></i> Supprimer
+                                        <button type="submit" class="btn btn-outline-danger btn-sm border-0">
+                                            <i class="fas fa-trash-alt me-1"></i> Supprimer
                                         </button>
                                     </form>
                                 </div>
@@ -58,10 +68,13 @@
                     </div>
                 }
                 
-                <div class="mt-3">
+                <div class="mt-3 d-flex justify-content-between align-items-center">
+                    <a href="/Catalogue" class="text-decoration-none text-muted small">
+                        <i class="fas fa-chevron-left me-1"></i> Continuer mes achats
+                    </a>
                     <form asp-controller="Commande" asp-action="ViderPanier" method="post">
-                        <button type="submit" class="btn btn-outline-secondary btn-sm" onclick="return confirm('Voulez-vous vraiment vider votre panier ?')">
-                            <i class="fas fa-broom"></i> Vider le panier
+                        <button type="submit" class="btn btn-link text-muted btn-sm text-decoration-none" onclick="return confirm('Voulez-vous vraiment vider votre panier ?')">
+                            <i class="fas fa-broom me-1"></i> Vider le panier
                         </button>
                     </form>
                 </div>
@@ -69,23 +82,30 @@
 
             @* Résumé du Panier *@
             <div class="col-md-4">
-                <div class="card shadow border-0">
-                    <div class="card-header bg-dark text-white fw-bold py-3">
-                        Résumé de la commande
+                <div class="card shadow border-0 rounded-4 overflow-hidden">
+                    <div class="card-header bg-dark text-white fw-bold py-3 border-0">
+                        <i class="fas fa-file-invoice me-2"></i>Résumé de la commande
                     </div>
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between mb-3">
                             <span class="text-muted">Nombre d'articles :</span>
                             <span class="fw-bold">@Model.Items.Sum(i => i.Quantite)</span>
                         </div>
-                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">Sous-total :</span>
+                            <span class="fw-bold">@Model.Items.Sum(i => i.Total) FCFA</span>
+                        </div>
+                        <hr class="my-4">
                         <div class="d-flex justify-content-between mb-4">
-                            <span class="h5 fw-bold">Total :</span>
+                            <span class="h5 fw-bold">Total à payer :</span>
                             <span class="h5 fw-bold text-danger">@Model.Items.Sum(i => i.Total) FCFA</span>
                         </div>
-                        <a asp-controller="Commande" asp-action="Valider" class="btn btn-success btn-lg w-100 py-3 fw-bold">
-                            Passer à la caisse <i class="fas fa-arrow-right ms-2"></i>
+                        <a asp-controller="Commande" asp-action="Valider" class="btn btn-success btn-lg w-100 py-3 fw-bold shadow-sm rounded-3">
+                            Valider ma commande <i class="fas fa-check-circle ms-2"></i>
                         </a>
+                        <div class="text-center mt-3">
+                            <small class="text-muted"><i class="fas fa-lock me-1"></i> Paiement sécurisé via Wave/OM</small>
+                        </div>
                     </div>
                 </div>
             </div>
