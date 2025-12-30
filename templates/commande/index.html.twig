@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+{% block title %}Gestion Commandes{% endblock %}
+{% block body %}
+<h1 class="mb-4"><i class="fas fa-shopping-cart"></i> Gestion des Commandes</h1>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">État</label>
+                <select name="etat" class="form-select">
+                    <option value="">Tous</option>
+                    <option value="NonTraiter" {{ filterEtat == 'NonTraiter' ? 'selected' : '' }}>Non Traité</option>
+                    <option value="Terminer" {{ filterEtat == 'Terminer' ? 'selected' : '' }}>Terminé</option>
+                    <option value="Annuler" {{ filterEtat == 'Annuler' ? 'selected' : '' }}>Annulé</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Date</label>
+                <input type="date" name="date" value="{{ filterDate }}" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Client</label>
+                <select name="client" class="form-select">
+                    <option value="">Tous</option>
+                    {% for client in clients %}
+                        <option value="{{ client.id }}" {{ filterClient == client.id ? 'selected' : '' }}>
+                            {{ client.nomComplet }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">&nbsp;</label>
+                <button type="submit" class="btn btn-danger w-100">
+                    <i class="fas fa-filter"></i> Filtrer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead class="table-danger">
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Client</th>
+                <th>Montant</th>
+                <th>Lieu</th>
+                <th>État</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    <td>{{ commande.id }}</td>
+                    <td>{{ commande.date|date('d/m/Y') }}</td>
+                    <td>{{ commande.client ? commande.client.nomComplet : 'N/A' }}</td>
+                    <td>{{ commande.montantTotal|number_format(0, ',', ' ') }} F</td>
+                    <td>
+                        <span class="badge bg-{{ commande.lieuConsommation == 'Livraison' ? 'info' : 'secondary' }}">
+                            {{ commande.lieuConsommation }}
+                        </span>
+                        {% if commande.zone %}
+                            (Zone {{ commande.zone.id }})
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge bg-{{ commande.etatCmd == 'Terminer' ? 'success' : (commande.etatCmd == 'Annuler' ? 'danger' : 'warning') }}">
+                            {{ commande.etatCmd }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ path('commande_show', {id: commande.id}) }}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        {% if commande.etatCmd == 'NonTraiter' %}
+                            <form method="post" action="{{ path('commande_terminer', {id: commande.id}) }}" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-success" title="Terminer">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                            <form method="post" action="{{ path('commande_annuler', {id: commande.id}) }}" style="display:inline;" 
+                                  onsubmit="return confirm('Annuler cette commande ?');">
+                                <button type="submit" class="btn btn-sm btn-danger" title="Annuler">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7" class="text-center text-muted">Aucune commande</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

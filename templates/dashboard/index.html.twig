@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+<h1 class="mb-4"><i class="fas fa-chart-line"></i> Dashboard - Statistiques du Jour</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5>Commandes En Cours</h5>
+                <h2>{{ stats.commandesEnCours }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5>Commandes Validées</h5>
+                <h2>{{ stats.commandesValidees }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5>Commandes Annulées</h5>
+                <h2>{{ stats.commandesAnnulees }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5>Recettes Journalières</h5>
+                <h2>{{ stats.recettes|number_format(0, ',', ' ') }} F</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5><i class="fas fa-hamburger"></i> Burgers les Plus Vendus</h5>
+            </div>
+            <div class="card-body">
+                {% if stats.burgersPlusVendus is empty %}
+                    <p class="text-muted">Aucune vente aujourd'hui</p>
+                {% else %}
+                    <ol>
+                        {% for burger in stats.burgersPlusVendus %}
+                            <li><strong>{{ burger.nom }}</strong> - {{ burger.total_vendu }} vendus</li>
+                        {% endfor %}
+                    </ol>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5><i class="fas fa-utensils"></i> Menus les Plus Vendus</h5>
+            </div>
+            <div class="card-body">
+                {% if stats.menusPlusVendus is empty %}
+                    <p class="text-muted">Aucune vente aujourd'hui</p>
+                {% else %}
+                    <ol>
+                        {% for menu in stats.menusPlusVendus %}
+                            <li><strong>{{ menu.nom }}</strong> - {{ menu.total_vendu }} vendus</li>
+                        {% endfor %}
+                    </ol>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

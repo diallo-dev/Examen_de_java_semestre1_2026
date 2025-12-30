@@ -1,0 +1,41 @@
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\Gestionnaire:
+            algorithm: auto
+
+    providers:
+        gestionnaire_provider:
+            entity:
+                class: App\Entity\Gestionnaire
+                property: matricule
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            lazy: true
+            provider: gestionnaire_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: dashboard
+                enable_csrf: true
+            logout:
+                path: app_logout
+                target: app_login
+
+    access_control:
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_GESTIONNAIRE }
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

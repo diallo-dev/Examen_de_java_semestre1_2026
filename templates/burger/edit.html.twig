@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}Modifier Burger{% endblock %}
+{% block body %}
+<h1 class="mb-4"><i class="fas fa-edit"></i> Modifier le Burger</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form) }}
+                    {{ form_row(form.nom) }}
+                    {{ form_row(form.prix) }}
+                    {{ form_row(form.urlImage) }}
+                    {{ form_row(form.description) }}
+                    {{ form_row(form.etatstock) }}
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                        <a href="{{ path('burger_index') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Annuler
+                        </a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        {% if burger.urlImage %}
+            <div class="card">
+                <div class="card-header">Aperçu</div>
+                <div class="card-body text-center">
+                    <img src="{{ burger.urlImage }}" class="img-fluid rounded" style="max-height:300px;">
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
