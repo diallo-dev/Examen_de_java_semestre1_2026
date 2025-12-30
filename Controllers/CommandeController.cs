@@ -28,17 +28,20 @@ namespace BrasilBurger.Web.Controllers
             _clientService = clientService;
         }
 
- public IActionResult Panier()
-{
-    var items = PanierHelper.GetPanier(HttpContext.Session) ?? new List<ItemPanier>();
-    
-    var viewModel = new PanierViewModel
-    {
-        Items = items
-    };
+        // ACCÈS AU PANIER (ROUTE FORCÉE POUR ÉVITER LES ERREURS 404)
+        [Route("Commande/Panier")]
+        public IActionResult Panier()
+        {
+            var items = PanierHelper.GetPanier(HttpContext.Session) ?? new List<ItemPanier>();
+            
+            var viewModel = new PanierViewModel
+            {
+                Items = items
+            };
 
-    return View(viewModel);
-}
+            return View(viewModel);
+        }
+
         [HttpPost]
         public IActionResult RetirerItem(int id, string type)
         {
@@ -118,14 +121,10 @@ namespace BrasilBurger.Web.Controllers
                 fraisLivraison = model.FraisLivraison;
                 idZone = model.IdZone;
                 adresse = model.AdresseLivraison;
-
-                Console.WriteLine($"✅ Livraison: Zone {idZone}, Frais {fraisLivraison} FCFA");
             }
 
             double sousTotal = items.Sum(i => i.Total);
             double montantTotal = sousTotal + fraisLivraison;
-
-            Console.WriteLine($"📊 Sous-total: {sousTotal}, Frais: {fraisLivraison}, Total: {montantTotal}");
 
             var commande = new Commande
             {
@@ -141,7 +140,6 @@ namespace BrasilBurger.Web.Controllers
             try
             {
                 var commandeCreee = await _commandeService.CreerCommandeAsync(commande);
-                Console.WriteLine($"✅ Commande créée: ID {commandeCreee.Id}");
 
                 if (!string.IsNullOrEmpty(adresse))
                 {
@@ -149,32 +147,27 @@ namespace BrasilBurger.Web.Controllers
                     if (client != null)
                     {
                         client.Adresse = adresse;
-                        Console.WriteLine($"✅ Adresse sauvegardée: {adresse}");
                     }
                 }
 
                 foreach (var item in items.Where(i => i.Type == "burger"))
                 {
-                    var commandeBurger = new CommandeBurger
-                    {
+                    await _commandeService.AjouterCommandeBurgerAsync(new CommandeBurger {
                         IdCommande = commandeCreee.Id,
                         IdBurger = item.Id,
                         Quantite = item.Quantite,
                         PrixUnitaire = item.Prix
-                    };
-                    await _commandeService.AjouterCommandeBurgerAsync(commandeBurger);
+                    });
                 }
 
                 foreach (var item in items.Where(i => i.Type == "menu"))
                 {
-                    var commandeMenu = new CommandeMenu
-                    {
+                    await _commandeService.AjouterCommandeMenuAsync(new CommandeMenu {
                         IdCommande = commandeCreee.Id,
                         IdMenu = item.Id,
                         Quantite = item.Quantite,
                         PrixUnitaire = item.Prix
-                    };
-                    await _commandeService.AjouterCommandeMenuAsync(commandeMenu);
+                    });
                 }
 
                 PanierHelper.ViderPanier(HttpContext.Session);
@@ -182,7 +175,6 @@ namespace BrasilBurger.Web.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Erreur: {ex.Message}");
                 TempData["ErrorMessage"] = $"Erreur: {ex.Message}";
                 return RedirectToAction("Valider");
             }
@@ -197,10 +189,7 @@ namespace BrasilBurger.Web.Controllers
             }
 
             var commandes = await _commandeService.ListerCommandesClientAsync(clientId.Value);
-            var viewModel = new MesCommandesViewModel
-            {
-                Commandes = new List<CommandeDetailViewModel>()
-            };
+            var viewModel = new MesCommandesViewModel();
 
             foreach (var cmd in commandes)
             {
@@ -210,8 +199,7 @@ namespace BrasilBurger.Web.Controllers
                     Date = cmd.Date,
                     EtatCmd = cmd.EtatCmd,
                     MontantTotal = cmd.MontantTotal,
-                    LieuConsommation = cmd.LieuConsommation,
-                    Items = new List<ItemPanier>()
+                    LieuConsommation = cmd.LieuConsommation
                 };
 
                 var burgers = await _commandeService.GetBurgersCommandeAsync(cmd.Id);
@@ -220,14 +208,8 @@ namespace BrasilBurger.Web.Controllers
                     var burger = await _burgerService.TrouverParIdAsync(cb.IdBurger);
                     if (burger != null)
                     {
-                        commandeDetail.Items.Add(new ItemPanier
-                        {
-                            Id = burger.Id,
-                            Type = "burger",
-                            Nom = burger.Nom,
-                            Prix = cb.PrixUnitaire,
-                            Quantite = cb.Quantite,
-                            UrlImage = burger.UrlImage
+                        commandeDetail.Items.Add(new ItemPanier {
+                            Id = burger.Id, Nom = burger.Nom, Prix = cb.PrixUnitaire, Quantite = cb.Quantite, UrlImage = burger.UrlImage, Type = "burger"
                         });
                     }
                 }
@@ -238,14 +220,8 @@ namespace BrasilBurger.Web.Controllers
                     var menu = await _menuService.TrouverParIdAsync(cm.IdMenu);
                     if (menu != null)
                     {
-                        commandeDetail.Items.Add(new ItemPanier
-                        {
-                            Id = menu.Id,
-                            Type = "menu",
-                            Nom = menu.Nom,
-                            Prix = cm.PrixUnitaire,
-                            Quantite = cm.Quantite,
-                            UrlImage = menu.UrlImage
+                        commandeDetail.Items.Add(new ItemPanier {
+                            Id = menu.Id, Nom = menu.Nom, Prix = cm.PrixUnitaire, Quantite = cm.Quantite, UrlImage = menu.UrlImage, Type = "menu"
                         });
                     }
                 }
