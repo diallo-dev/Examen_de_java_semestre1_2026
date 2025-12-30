@@ -18,14 +18,28 @@ namespace BrasilBurger.Web.Controllers
             _commandeService = commandeService;
         }
 
+
+        public async Task<IActionResult> Paiement(int commandeId)
+        {
+            var commande = await _commandeService.TrouverCommandeParIdAsync(commandeId);
+            
+            if (commande == null)
+            {
+                return NotFound();
+            }
+
+            var viewModel = new PaiementViewModel
+            {
+                IdCommande = commande.Id,
+                Montant = commande.MontantTotal
+            };
+
+            return View(viewModel);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Traiter(PaiementViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("Paiement", model);
-            }
-
             var commande = await _commandeService.TrouverCommandeParIdAsync(model.IdCommande);
             if (commande == null)
             {
@@ -43,13 +57,14 @@ namespace BrasilBurger.Web.Controllers
             {
                 IdCommande = model.IdCommande,
                 Montant = model.Montant,
-                Mode = model.ModePaiement,
+                Mode = model.ModePaiement ?? "Mobile Money",
                 Date = DateTime.Now
             };
 
             await _paiementService.CreerPaiementAsync(paiement);
 
-            TempData["SuccessMessage"] = $"Paiement de {model.Montant} FCFA effectué avec succès via {model.ModePaiement} !";
+            TempData["SuccessMessage"] = $"Paiement de {model.Montant} FCFA effectué avec succès !";
+            
             return RedirectToAction("Confirmation", new { id = model.IdCommande });
         }
 

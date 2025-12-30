@@ -1,0 +1,35 @@
+@model BrasilBurger.Web.ViewModels.PaiementViewModel
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-danger text-white text-center py-3">
+                    <h4>Finaliser mon paiement</h4>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <p class="lead">Commande N° <strong>@Model.IdCommande</strong></p>
+                    <h2 class="display-6 text-dark mb-4">Total : @Model.Montant FCFA</h2>
+
+                    <form asp-action="Traiter" method="post">
+                        <input type="hidden" asp-for="IdCommande" />
+                        <input type="hidden" asp-for="Montant" />
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" name="ModePaiement" value="Orange Money" class="btn btn-outline-warning btn-lg py-3">
+                                <i class="fas fa-mobile-alt me-2"></i> Payer par Orange Money
+                            </button>
+                            
+                            <button type="submit" name="ModePaiement" value="Wave" class="btn btn-outline-primary btn-lg py-3">
+                                <i class="fas fa-wallet me-2"></i> Payer par Wave
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light text-center small">
+                    Paiement 100% sécurisé
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
