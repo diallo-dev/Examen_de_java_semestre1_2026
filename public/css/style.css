@@ -1,6 +1,9 @@
 :root {
     --brasil-red: #DC3545;
     --brasil-yellow: #FFC107;
+    
+    --brasil-blue: #0d6efd;  
+    --brasil-green: #198754;  
 }
 
 body {
@@ -23,15 +26,40 @@ body {
     font-weight: 600;
 }
 
-.btn-danger {
+
+.btn-danger, .btn-brasil-red {
     background-color: var(--brasil-red);
     border-color: var(--brasil-red);
+    color: white;
 }
 
-.btn-danger:hover {
-    background-color: #c82333;
-    border-color: #bd2130;
+
+.btn-brasil-blue {
+    background-color: var(--brasil-blue);
+    border-color: var(--brasil-blue);
+    color: white;
+    transition: all 0.3s;
 }
+.btn-brasil-blue:hover {
+    background-color: #0b5ed7;
+    color: white;
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+
+.btn-brasil-green {
+    background-color: var(--brasil-green);
+    border-color: var(--brasil-green);
+    color: white;
+    transition: all 0.3s;
+}
+.btn-brasil-green:hover {
+    background-color: #157347;
+    color: white;
+    box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+}
+
+
 
 .table-danger {
     background-color: var(--brasil-red);
@@ -55,7 +83,7 @@ body {
     border-radius: 0.5rem;
 }
 
-/* Statistiques cards */
+
 .card.text-white h5 {
     font-size: 0.9rem;
     opacity: 0.9;
@@ -67,7 +95,7 @@ body {
     margin: 0;
 }
 
-/* Tables */
+
 .table thead th {
     border-bottom: 2px solid var(--brasil-red);
 }
@@ -76,7 +104,7 @@ body {
     background-color: rgba(220, 53, 69, 0.05);
 }
 
-/* Forms */
+
 .form-label {
     font-weight: 500;
     margin-bottom: 0.3rem;
@@ -88,12 +116,7 @@ body {
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
-/* Login page */
-.card-body h3 {
-    color: var(--brasil-red);
-}
 
-/* Responsive */
 @media (max-width: 768px) {
     .table-responsive {
         font-size: 0.9rem;
