@@ -19,7 +19,7 @@ main {
 
 
 .hero-section {
-    background: linear-gradient(135deg, var(--brasil-red) 0%, #a71d2a 100%);
+    background: linear-gradient(135deg, var(--brasil-red) 0%, #220bd2);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
