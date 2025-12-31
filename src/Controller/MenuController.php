@@ -22,6 +22,27 @@ class MenuController extends AbstractController
         ]);
     }
 
+    #[Route('/new', name: 'menu_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $em): Response
+    {
+        $menu = new Menu();
+        $form = $this->createForm(MenuType::class, $menu);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($menu);
+            $em->flush();
+
+            $this->addFlash('success', 'Nouveau menu créé avec succès !');
+            return $this->redirectToRoute('menu_index');
+        }
+
+        return $this->render('menu/new.html.twig', [
+            'menu' => $menu,
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/{id}/edit', name: 'menu_edit')]
     public function edit(Request $request, Menu $menu, EntityManagerInterface $em): Response
     {
