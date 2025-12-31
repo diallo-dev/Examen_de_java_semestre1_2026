@@ -8,7 +8,9 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^2.11",
+        "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.1",
+        "symfony/asset": "^8.0",
         "symfony/console": "7.3.*",
         "symfony/dotenv": "7.3.*",
         "symfony/flex": "^2",
@@ -18,6 +20,7 @@
         "symfony/security-bundle": "7.3.*",
         "symfony/twig-bundle": "7.3.*",
         "symfony/validator": "7.3.*",
+        "symfony/var-exporter": "^7.0",
         "symfony/yaml": "7.3.*",
         "twig/extra-bundle": "^3.8",
         "twig/twig": "^3.8"
@@ -35,5 +38,11 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        }
+    }
 }
