@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Entity\Commande;
 use App\Repository\CommandeRepository;
 use App\Repository\ClientRepository;
+use App\Repository\LivreurRepository; 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,13 +39,17 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/{id}', name: 'commande_show')]
-    public function show(Commande $commande, CommandeRepository $repo): Response
+    public function show(Commande $commande, CommandeRepository $repo, LivreurRepository $livreurRepo): Response
     {
         $items = $repo->getItemsByCommandeId($commande->getId());
+        
+        
+        $livreurs = $livreurRepo->findAll();
         
         return $this->render('commande/show.html.twig', [
             'commande' => $commande,
             'items' => $items,
+            'livreurs' => $livreurs, 
         ]);
     }
 
@@ -70,7 +75,7 @@ class CommandeController extends AbstractController
         $livreurId = $request->request->get('livreur_id');
         $repo->affecterLivreur($commande->getId(), $livreurId);
         $this->addFlash('success', 'Livreur affecté à la commande');
-        return $this->redirectToRoute('commande_index');
+        return $this->redirectToRoute('commande_show', ['id' => $commande->getId()]);
     }
 
     #[Route('/zone/{id}', name: 'commande_par_zone')]
