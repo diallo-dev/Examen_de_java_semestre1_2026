@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repository;
 
 use App\Entity\Commande;
@@ -25,24 +26,31 @@ class CommandeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByFilters(?string $etat = null, ?string $date = null, ?int $clientId = null): array
+    /**
+     * Correction du filtre : accepte string ou int pour $clientId
+     */
+    public function findByFilters(?string $etat = null, ?string $date = null, $clientId = null): array
     {
         $qb = $this->createQueryBuilder('c')
             ->leftJoin('c.client', 'cl')
             ->addSelect('cl');
 
-        if ($etat) {
+        if ($etat && $etat !== '') {
             $qb->andWhere('c.etatCmd = :etat')
                ->setParameter('etat', $etat);
         }
 
-        if ($date) {
-            $qb->andWhere('c.date = :date')
-               ->setParameter('date', new \DateTime($date));
+        if ($date && $date !== '') {
+            try {
+                $qb->andWhere('c.date = :date')
+                   ->setParameter('date', new \DateTime($date));
+            } catch (\Exception $e) {
+                // Si la date est invalide, on ignore ce filtre
+            }
         }
 
-        if ($clientId) {
-            $qb->andWhere('c.idClient = :clientId')
+        if ($clientId !== null && $clientId !== '') {
+            $qb->andWhere('c.client = :clientId')
                ->setParameter('clientId', $clientId);
         }
 
@@ -52,12 +60,17 @@ class CommandeRepository extends ServiceEntityRepository
                   ->getResult();
     }
 
+    /**
+     * Version optimisée pour l'affichage dans la zone de livraison
+     */
     public function findByZone(int $zoneId): array
     {
         return $this->createQueryBuilder('c')
-            ->where('c.idZone = :zoneId')
-            ->andWhere('c.lieuConsommation = :livraison')
-            ->andWhere('c.idLivreur IS NULL')
+            ->leftJoin('c.client', 'cl') // Jointure indispensable pour afficher nom/adresse
+            ->addSelect('cl')
+            ->where('c.zone = :zoneId')
+            ->andWhere('c.livreur IS NULL') // On ne veut que les commandes sans livreur
+            ->andWhere('LOWER(c.lieuConsommation) = LOWER(:livraison)') // Flexible sur Livraison/livraison
             ->setParameter('zoneId', $zoneId)
             ->setParameter('livraison', 'Livraison')
             ->orderBy('c.date', 'DESC')
@@ -74,8 +87,8 @@ class CommandeRepository extends ServiceEntityRepository
                     (cb.quantite * cb.prix_unitaire) as total
              FROM commande_burger cb
              INNER JOIN burger b ON cb.id_burger = b.id
-             WHERE cb.id_commande = :commandeId',
-            ['commandeId' => $commandeId]
+             WHERE cb.id_commande = ?',
+            [$commandeId]
         )->fetchAllAssociative();
         
         $menus = $conn->executeQuery(
@@ -83,8 +96,8 @@ class CommandeRepository extends ServiceEntityRepository
                     (cm.quantite * cm.prix_unitaire) as total
              FROM commande_menu cm
              INNER JOIN menu m ON cm.id_menu = m.id
-             WHERE cm.id_commande = :commandeId',
-            ['commandeId' => $commandeId]
+             WHERE cm.id_commande = ?',
+            [$commandeId]
         )->fetchAllAssociative();
         
         return array_merge($burgers, $menus);
@@ -114,15 +127,20 @@ class CommandeRepository extends ServiceEntityRepository
             ->execute();
     }
 
-    public function affecterLivreur(int $commandeId, int $livreurId): void
-    {
-        $this->createQueryBuilder('c')
-            ->update()
-            ->set('c.idLivreur', ':livreurId')
-            ->where('c.id = :id')
-            ->setParameter('livreurId', $livreurId)
-            ->setParameter('id', $commandeId)
-            ->getQuery()
-            ->execute();
-    }
+            public function affecterLivreur(int $commandeId, int $livreurId): void
+        {
+            $conn = $this->getEntityManager()->getConnection();
+            
+            // Requête SQL directe pour mettre à jour le livreur et l'état
+            $sql = "UPDATE commande 
+                    SET id_livreur = :livreurId, 
+                        etat_cmd = 'EnCours' 
+                    WHERE id = :commandeId";
+            
+            $conn->executeStatement($sql, [
+                'livreurId' => $livreurId,
+                'commandeId' => $commandeId
+            ]);
+        }
+  
 }
