@@ -15,7 +15,7 @@ namespace BrasilBurger.Web.Controllers
             _quartierService = quartierService;
         }
 
-        // GET: /Livraison/Zones
+        
         public async Task<IActionResult> Zones()
         {
             var zones = await _zoneService.ListerZonesAsync();
@@ -30,7 +30,7 @@ namespace BrasilBurger.Web.Controllers
             return View(viewModel);
         }
 
-        // GET: /Livraison/CalculerFrais?quartierId=5
+        
         [HttpGet]
         public async Task<IActionResult> CalculerFrais(int quartierId)
         {
@@ -45,7 +45,7 @@ namespace BrasilBurger.Web.Controllers
             });
         }
 
-        // GET: /Livraison/QuartiersParZone?zoneId=1
+        
         [HttpGet]
         public async Task<IActionResult> QuartiersParZone(int zoneId)
         {

@@ -16,7 +16,7 @@ namespace BrasilBurger.Web.Entity
         public int? IdLivreur { get; set; }
         public int? IdZone { get; set; }
         
-        // Détails commande
+        
         public List<CommandeBurger> CommandeBurgers { get; set; }
         public List<CommandeMenu> CommandeMenus { get; set; }
 

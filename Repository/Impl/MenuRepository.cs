@@ -23,7 +23,7 @@ namespace BrasilBurger.Web.Repository.Impl
                 await _context.SaveChangesAsync();
                 
                 int menuId = menu.Id;
-                Console.WriteLine($"✅ Menu créé avec l'ID : {menuId}");
+                Console.WriteLine($" Menu créé avec l'ID : {menuId}");
                 
                 if (menu.Burger != null)
                 {
@@ -31,7 +31,7 @@ namespace BrasilBurger.Web.Repository.Impl
                         "INSERT INTO menu_burger (id_menu, id_burger, quantite) VALUES ({0}, {1}, {2})",
                         menuId, menu.Burger.Id, 1
                     );
-                    Console.WriteLine("✅ Burger associé au menu");
+                    Console.WriteLine(" Burger associé au menu");
                 }
                 
                 if (menu.Complements != null && menu.Complements.Any())
@@ -43,7 +43,7 @@ namespace BrasilBurger.Web.Repository.Impl
                             menuId, complement.Id, 1
                         );
                     }
-                    Console.WriteLine($"✅ {menu.Complements.Count} complément(s) associé(s)");
+                    Console.WriteLine($" {menu.Complements.Count} complément(s) associé(s)");
                 }
                 
                 await transaction.CommitAsync();
@@ -52,7 +52,7 @@ namespace BrasilBurger.Web.Repository.Impl
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                Console.WriteLine($"❌ Erreur création menu: {ex.Message}");
+                Console.WriteLine($" Erreur création menu: {ex.Message}");
                 throw;
             }
         }

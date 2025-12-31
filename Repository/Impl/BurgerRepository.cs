@@ -17,7 +17,7 @@ namespace BrasilBurger.Web.Repository.Impl
         {
             _context.Burgers.Add(burger);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"✅ Burger créé avec l'ID : {burger.Id}");
+            Console.WriteLine($"Burger créé avec l'ID : {burger.Id}");
             return burger;
         }
 

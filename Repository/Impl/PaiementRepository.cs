@@ -17,7 +17,7 @@ namespace BrasilBurger.Web.Repository.Impl
         {
             _context.Paiements.Add(paiement);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"✅ Paiement créé avec l'ID : {paiement.Id}");
+            Console.WriteLine($" Paiement créé avec l'ID : {paiement.Id}");
             return paiement;
         }
 

@@ -20,7 +20,7 @@ namespace BrasilBurger.Web.Controllers
             _complementService = complementService;
         }
 
-        // GET: /Catalogue ou /
+       
         public async Task<IActionResult> Index(string? filtre)
         {
             var burgers = await _burgerService.ListerParEtatAsync("disponible");

@@ -17,7 +17,7 @@ namespace BrasilBurger.Web.Repository.Impl
         {
             _context.Quartiers.Add(quartier);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"✅ Quartier créé : {quartier.Nom}");
+            Console.WriteLine($"Quartier créé : {quartier.Nom}");
             return quartier;
         }
 
@@ -58,7 +58,7 @@ namespace BrasilBurger.Web.Repository.Impl
 
             _context.Quartiers.Remove(quartier);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"✅ Quartier {quartier.Nom} supprimé");
+            Console.WriteLine($" Quartier {quartier.Nom} supprimé");
             return true;
         }
     }

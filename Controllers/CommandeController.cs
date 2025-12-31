@@ -34,11 +34,11 @@ public async Task<IActionResult> AjouterBurger(int id, int quantite, List<int> c
     var burger = await _burgerService.TrouverParIdAsync(id);
     if (burger != null)
     {
-        // 1. On commence avec le prix de base du burger
+        
         double prixTotalUnitaire = burger.Prix;
         List<Complement> complementsChoisis = new List<Complement>();
 
-        // 2. Si des compléments sont cochés, on les cherche et on ajoute leur prix
+        
         if (complementIds != null && complementIds.Any())
         {
             foreach (var compId in complementIds)

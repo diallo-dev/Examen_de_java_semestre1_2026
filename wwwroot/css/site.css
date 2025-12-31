@@ -1,7 +1,7 @@
-/* Brasil Burger - Styles personnalisés */
+
 
 :root {
-    --brasil-red: #dc3545;
+    --brasil-red: #220bd2;
     --brasil-yellow: #ffc107;
     --brasil-green: #198754;
 }
@@ -17,13 +17,13 @@ main {
     flex: 1;
 }
 
-/* Hero Section */
+
 .hero-section {
     background: linear-gradient(135deg, var(--brasil-red) 0%, #a71d2a 100%);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Product Cards */
+
 .product-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
@@ -43,7 +43,7 @@ main {
     transform: scale(1.1);
 }
 
-/* Navbar */
+
 .navbar {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -53,7 +53,7 @@ main {
     letter-spacing: 1px;
 }
 
-/* Badge Panier */
+
 #panier-count {
     position: absolute;
     top: -5px;
@@ -65,7 +65,7 @@ main {
     text-align: center;
 }
 
-/* Buttons */
+
 .btn {
     border-radius: 8px;
     padding: 0.5rem 1.5rem;
@@ -89,7 +89,7 @@ main {
     color: #000;
 }
 
-/* Cards */
+
 .card {
     border-radius: 12px;
     border: none;
@@ -99,18 +99,18 @@ main {
     border-radius: 12px 12px 0 0 !important;
 }
 
-/* Alerts */
+
 .alert {
     border-radius: 8px;
     border: none;
 }
 
-/* Footer */
+
 footer {
     margin-top: auto;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .hero-section h1 {
         font-size: 2rem;
@@ -121,7 +121,7 @@ footer {
     }
 }
 
-/* Animations */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -137,14 +137,14 @@ footer {
     animation: fadeIn 0.5s ease;
 }
 
-/* Badge État Commande */
+
 .badge {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     border-radius: 20px;
 }
 
-/* Forms */
+
 .form-control:focus {
     border-color: var(--brasil-red);
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
@@ -155,12 +155,12 @@ footer {
     border-color: var(--brasil-red);
 }
 
-/* Loading Spinner (optionnel) */
+
 .spinner-border {
     color: var(--brasil-red);
 }
 
-/* Panier Item */
+
 .panier-item {
     transition: background-color 0.3s ease;
 }

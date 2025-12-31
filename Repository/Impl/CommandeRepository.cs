@@ -23,7 +23,7 @@ namespace BrasilBurger.Web.Repository.Impl
                 await _context.SaveChangesAsync();
                 
                 int commandeId = commande.Id;
-                Console.WriteLine($"✅ Commande créée avec l'ID : {commandeId}");
+                Console.WriteLine($" Commande créée avec l'ID : {commandeId}");
                 
                 foreach (var cb in commande.CommandeBurgers)
                 {

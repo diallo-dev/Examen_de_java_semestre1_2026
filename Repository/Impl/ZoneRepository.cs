@@ -17,7 +17,7 @@ namespace BrasilBurger.Web.Repository.Impl
         {
             _context.Zones.Add(zone);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"✅ Zone créée avec l'ID : {zone.Id}");
+            Console.WriteLine($" Zone créée avec l'ID : {zone.Id}");
             return zone;
         }
 
@@ -52,7 +52,7 @@ namespace BrasilBurger.Web.Repository.Impl
 
             _context.Zones.Remove(zone);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"✅ Zone {id} supprimée");
+            Console.WriteLine($"Zone {id} supprimée");
             return true;
         }
     }

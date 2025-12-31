@@ -40,7 +40,7 @@ namespace BrasilBurger.Web.Service.Impl
             
             if (quartier?.Zone == null)
             {
-                return 0; // Pas de frais si le quartier n'a pas de zone
+                return 0; 
             }
 
             return quartier.Zone.PrixLivraison;

@@ -17,7 +17,7 @@ namespace BrasilBurger.Web.Repository.Impl
         {
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
-            Console.WriteLine($"✅ Client créé avec l'ID : {client.Id}");
+            Console.WriteLine($" Client créé avec l'ID : {client.Id}");
             return client;
         }
 

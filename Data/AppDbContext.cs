@@ -158,7 +158,7 @@ namespace BrasilBurger.Web.Data
                 entity.Property(e => e.Quantite).HasColumnName("quantite");
             });
 
-            // Mapping Zone
+            
             modelBuilder.Entity<Zone>(entity =>
             {
                 entity.ToTable("zone");
@@ -172,7 +172,7 @@ namespace BrasilBurger.Web.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Mapping Quartier
+            
             modelBuilder.Entity<Quartier>(entity =>
             {
                 entity.ToTable("quartier");
