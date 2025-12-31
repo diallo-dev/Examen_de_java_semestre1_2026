@@ -1,56 +1,208 @@
 {% extends 'base.html.twig' %}
-{% block title %}Gestion Menus{% endblock %}
-{% block body %}
-<h1 class="mb-4"><i class="fas fa-utensils"></i> Gestion des Menus</h1>
 
-<div class="table-responsive">
-    <table class="table table-hover">
-        <thead class="table-danger">
-            <tr>
-                <th>Image</th>
-                <th>Nom</th>
-                <th>Prix</th>
-                <th>État</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for menu in menus %}
-                <tr>
-                    <td>
-                        {% if menu.urlImage %}
-                            <img src="{{ menu.urlImage }}" style="width:50px;height:50px;object-fit:cover;" class="rounded">
-                        {% else %}
-                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded" style="width:50px;height:50px;">
-                                <i class="fas fa-utensils"></i>
-                            </div>
-                        {% endif %}
-                    </td>
-                    <td>{{ menu.nom }}</td>
-                    <td>{{ menu.prixTotal|number_format(0, ',', ' ') }} FCFA</td>
-                    <td>
-                        <span class="badge bg-{{ menu.etatstock == 'disponible' ? 'success' : (menu.etatstock == 'archiver' ? 'secondary' : 'warning') }}">
-                            {{ menu.etatstock }}
-                        </span>
-                    </td>
-                    <td>
-                        <a href="{{ path('menu_edit', {id: menu.id}) }}" class="btn btn-sm btn-primary">
-                            <i class="fas fa-edit"></i> Modifier
-                        </a>
-                        {% if not menu.isArchive %}
-                            <form method="post" action="{{ path('menu_archive', {id: menu.id}) }}" style="display:inline;" 
-                                  onsubmit="return confirm('Archiver ce menu ?');">
-                                <button type="submit" class="btn btn-sm btn-secondary">
-                                    <i class="fas fa-archive"></i> Archiver
-                                </button>
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr><td colspan="5" class="text-center text-muted">Aucun menu</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block title %}Gestion Menus | Brasil Burger{% endblock %}
+
+{% block body %}
+<style>
+    :root {
+        --bb-primary: #d63031;
+        --bb-dark: #2d3436;
+        --bb-success: #10b981;
+        --bb-info: #4f46e5;
+        --bb-warning: #f59e0b;
+        --bb-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
+
+    .page-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        font-weight: 850;
+        color: var(--bb-dark);
+        letter-spacing: -1px;
+    }
+
+    /* Card Tableau */
+    .table-container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--bb-shadow);
+        overflow: hidden;
+        border: none;
+    }
+
+    .table thead {
+        background-color: var(--bb-dark);
+        color: white;
+    }
+
+    .table thead th {
+        padding: 1.2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        border: none;
+    }
+
+    .table tbody td {
+        padding: 1rem 1.2rem;
+        vertical-align: middle;
+        border-color: #f8fafc;
+        color: #475569;
+        font-weight: 500;
+    }
+
+    
+    .menu-img {
+        width: 55px;
+        height: 55px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border: 2px solid white;
+    }
+
+    .no-img {
+        width: 55px;
+        height: 55px;
+        background: #f1f5f9;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-size: 1.2rem;
+    }
+
+    /* Badges d'état */
+    .badge-status {
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    .bg-dispo { background-color: #dcfce7; color: var(--bb-success); }
+    .bg-rupture { background-color: #fffbeb; color: var(--bb-warning); }
+    .bg-archive { background-color: #f1f5f9; color: #64748b; }
+
+   
+    .btn-action {
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 8px 15px;
+        transition: all 0.2s;
+    }
+
+    .btn-edit { background-color: #eef2ff; color: var(--bb-info); border: none; }
+    .btn-edit:hover { background-color: var(--bb-info); color: white; }
+
+    .btn-archive { background-color: #fff1f2; color: var(--bb-primary); border: none; }
+    .btn-archive:hover { background-color: var(--bb-primary); color: white; }
+
+    .btn-add {
+        background-color: var(--bb-info);
+        color: white;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s;
+    }
+    .btn-add:hover {
+        background-color: #4338ca;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        color: white;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-utensils text-danger me-2"></i>Catalogue Menus
+            </h1>
+            <p class="text-muted mb-0">Gérez vos produits et leur disponibilité en cuisine</p>
+        </div>
+        <a href="{{ path('menu_new') }}" class="btn-add shadow-sm">
+            <i class="fas fa-plus me-2"></i>Nouveau Menu
+        </a>
+    </div>
+
+    <div class="table-container shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th class="text-center">Visuel</th>
+                        <th>Nom du Menu</th>
+                        <th>Prix Unitaire</th>
+                        <th>Disponibilité</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for menu in menus %}
+                        <tr>
+                            <td class="text-center">
+                                {% if menu.urlImage %}
+                                    <img src="{{ menu.urlImage }}" class="menu-img">
+                                {% else %}
+                                    <div class="no-img mx-auto"><i class="fas fa-hamburger"></i></div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">{{ menu.nom }}</div>
+                                <small class="text-muted">Référence: #MN-0{{ menu.id }}</small>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-dark">{{ menu.prixTotal|number_format(0, ',', ' ') }}</span>
+                                <small class="fw-bold text-muted">F</small>
+                            </td>
+                            <td>
+                                {% set statusClass = menu.etatstock == 'disponible' ? 'bg-dispo' : (menu.etatstock == 'archiver' ? 'bg-archive' : 'bg-rupture') %}
+                                <span class="badge-status {{ statusClass }}">
+                                    <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>
+                                    {{ menu.etatstock }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{{ path('menu_edit', {id: menu.id}) }}" class="btn-action btn-edit shadow-sm">
+                                        <i class="fas fa-pen me-1"></i> Modifier
+                                    </a>
+                                    
+                                    {% if not menu.isArchive %}
+                                        <form method="post" action="{{ path('menu_archive', {id: menu.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver ce menu ?');">
+                                            <button type="submit" class="btn-action btn-archive shadow-sm">
+                                                <i class="fas fa-archive me-1"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fas fa-search fa-3x mb-3 opacity-25"></i>
+                                <p>Aucun menu trouvé dans la base de données.</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

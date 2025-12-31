@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Livraisons par Zone | Brasil Burger{% endblock %}
+
+{% block body %}
+<style>
+    :root {
+        --bb-primary: #d63031;
+        --bb-dark: #2d3436;
+        --bb-success: #10b981;
+        --bb-info: #4f46e5;
+        --bb-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    }
+
+    body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
+
+    .page-header {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        font-weight: 850;
+        color: var(--bb-dark);
+        letter-spacing: -1px;
+        margin: 0;
+    }
+
+    /* Carte de Zone */
+    .zone-card {
+        border: none;
+        border-radius: 20px;
+        background: white;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--bb-shadow);
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .zone-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+
+    .zone-badge-id {
+        background: var(--bb-dark);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 0 0 12px 12px;
+        font-weight: 800;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+
+    .frais-tag {
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .price-val {
+        color: var(--bb-dark);
+        font-weight: 800;
+        font-size: 1.1rem;
+    }
+
+    /* Alertes de statut */
+    .status-box {
+        border-radius: 15px;
+        padding: 1.25rem;
+        margin: 1.5rem 0;
+        border: none;
+    }
+
+    .status-waiting {
+        background-color: #fffbeb;
+        border: 1px solid #fef3c7;
+    }
+
+    .status-complete {
+        background-color: #f0fdf4;
+        border: 1px solid #dcfce7;
+    }
+
+    /* Boutons */
+    .btn-action-zone {
+        border-radius: 12px;
+        font-weight: 700;
+        padding: 0.75rem;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+    }
+
+    .btn-view {
+        background-color: var(--bb-info);
+        border: none;
+        color: white;
+    }
+
+    .btn-view:hover {
+        background-color: #4338ca;
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn-disabled {
+        background-color: #f1f5f9;
+        color: #94a3b8;
+        border: none;
+    }
+
+    .btn-back {
+        border-radius: 12px;
+        font-weight: 600;
+        background: white;
+        color: var(--bb-dark);
+        border: 1px solid #e2e8f0;
+        padding: 10px 20px;
+    }
+    
+    .btn-back:hover {
+        background: #f8fafc;
+        color: var(--bb-primary);
+    }
+</style>
+
+<div class="container py-5">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="fas fa-map-marked-alt text-danger me-2"></i>Secteurs de Livraison
+            </h1>
+            <p class="text-muted mb-0">Affectation des livreurs par zone géographique</p>
+        </div>
+        <a href="{{ path('commande_index') }}" class="btn btn-back shadow-sm">
+            <i class="fas fa-list-ul me-2 text-danger"></i>Toutes les commandes
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% for zone in zones %}
+            <div class="col-md-4 col-xl-3">
+                <div class="card zone-card">
+                    <div class="text-center">
+                        <span class="zone-badge-id shadow-sm">ID #0{{ zone.id }}</span>
+                    </div>
+                    
+                    <div class="card-body text-center pt-2">
+                        <h2 class="fw-bold mt-2 mb-1" style="color: var(--bb-dark);">ZONE {{ zone.id }}</h2>
+                        
+                        <div class="frais-tag mb-1">
+                            Frais : <span class="price-val">{{ zone.prix_livraison|number_format(0, ',', ' ') }} F</span>
+                        </div>
+
+                        {% if zone.nb_commandes > 0 %}
+                            <div class="status-box status-waiting shadow-sm">
+                                <h3 class="fw-bold text-warning mb-0">{{ zone.nb_commandes }}</h3>
+                                <div class="small fw-bold text-uppercase" style="color: #b45309; font-size: 0.7rem;">En attente</div>
+                            </div>
+                            <a href="{{ path('livraison_zone_details', {id: zone.id}) }}" class="btn btn-view btn-action-zone w-100">
+                                <i class="fas fa-sign-in-alt me-2"></i>Gérer la zone
+                            </a>
+                        {% else %}
+                            <div class="status-box status-complete">
+                                <div class="text-success mb-1">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                                <div class="small fw-bold text-uppercase text-success" style="font-size: 0.7rem;">Zone à jour</div>
+                            </div>
+                            <button class="btn btn-disabled btn-action-zone w-100" disabled>
+                                <i class="fas fa-lock me-2"></i>Aucune action
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

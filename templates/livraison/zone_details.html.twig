@@ -1,0 +1,214 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zone {{ zoneId }} | Affectation{% endblock %}
+
+{% block body %}
+<style>
+    :root {
+        --bb-primary: #d63031;
+        --bb-dark: #2d3436;
+        --bb-success: #10b981; /* Vert Émeraude Professionnel */
+        --bb-info: #4f46e5;    /* Bleu Indigo moderne */
+        --bb-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+
+    body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
+
+    .page-title {
+        font-weight: 800;
+        color: var(--bb-dark);
+        letter-spacing: -1px;
+    }
+
+    /* Card Quartiers */
+    .info-card {
+        background: white;
+        border: none;
+        border-radius: 15px;
+        box-shadow: var(--bb-shadow);
+        border-left: 5px solid var(--bb-info);
+    }
+
+    /* Tableau Stylisé */
+    .custom-table-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: var(--bb-shadow);
+        overflow: hidden;
+        border: none;
+    }
+
+    .table thead {
+        background-color: var(--bb-dark);
+        color: white;
+    }
+
+    .table thead th {
+        padding: 1.2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        border: none;
+    }
+
+    /* Style du formulaire de sélection */
+    .select-livreur {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding: 0.5rem;
+        font-size: 0.85rem;
+        transition: border-color 0.2s;
+    }
+
+    .select-livreur:focus {
+        border-color: var(--bb-info);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    /* BOUTON VALIDER EN VERT */
+    .btn-validate {
+        background-color: var(--bb-success);
+        border: none;
+        color: white;
+        border-radius: 10px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+
+    .btn-validate:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    /* BOUTON RETOUR EN BLEU */
+    .btn-back {
+        border-radius: 12px;
+        font-weight: 600;
+        background: var(--bb-info);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        transition: all 0.3s;
+    }
+
+    .btn-back:hover {
+        background: #4338ca;
+        color: white;
+        box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+    }
+
+    .badge-id {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        font-weight: 700;
+    }
+</style>
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title mb-1">
+                <i class="fas fa-shipping-fast text-info me-2"></i>Livraisons Zone {{ zoneId }}
+            </h1>
+            <p class="text-muted small mb-0">Sélectionnez un livreur disponible pour chaque commande</p>
+        </div>
+        <a href="{{ path('livraison_zones') }}" class="btn btn-back shadow-sm">
+            <i class="fas fa-arrow-left me-2"></i>Retour aux zones
+        </a>
+    </div>
+
+    <div class="card info-card mb-4">
+        <div class="card-body py-3">
+            <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                    <i class="fas fa-map-marked-alt text-primary"></i>
+                </div>
+                <div>
+                    <h6 class="mb-1 fw-bold text-dark">Secteurs de livraison</h6>
+                    <span class="text-muted small">
+                        {% if quartiers is not empty %}
+                            {{ quartiers|map(q => q.nom)|join(' • ') }}
+                        {% else %}
+                            Aucun quartier enregistré.
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if commandes is not empty %}
+        <div class="card custom-table-card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th width="120">Réf.</th>
+                            <th>Client & Destination</th>
+                            <th class="text-end">Montant</th>
+                            <th class="text-center" width="450">Affectation Livreur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for commande in commandes %}
+                            <tr>
+                                <td>
+                                    <span class="badge badge-id px-3 py-2 rounded-pill">
+                                        #{{ commande.id }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="fw-bold text-dark">{{ commande.client ? commande.client.nomComplet : 'Client inconnu' }}</div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-location-arrow me-1 text-info"></i>
+                                        {{ commande.client ? commande.client.adresse : 'Adresse manquante' }}
+                                    </small>
+                                </td>
+                                <td class="text-end">
+                                    <span class="fw-bold text-dark fs-5">{{ commande.montantTotal|number_format(0, ',', ' ') }}</span>
+                                    <small class="text-muted fw-bold">F</small>
+                                </td>
+                                <td class="bg-light bg-opacity-50">
+                                    <form method="post" action="{{ path('commande_affecter_livreur', {id: commande.id}) }}" class="row g-2 align-items-center px-2">
+                                        <input type="hidden" name="commande_id" value="{{ commande.id }}">
+                                        <input type="hidden" name="zone_id" value="{{ zoneId }}">
+                                        
+                                        <div class="col-8">
+                                            <select name="livreur_id" class="form-select select-livreur shadow-sm" required>
+                                                <option value="">-- Choisir un livreur --</option>
+                                                {% for livreur in livreurs %}
+                                                    <option value="{{ livreur.id }}">
+                                                        🛵 {{ livreur.prenom }} {{ livreur.nom }} ({{ livreur.commandesEnCours }} en cours)
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-4">
+                                            <button type="submit" class="btn btn-validate w-100 shadow-sm py-2">
+                                                Affecter
+                                            </button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
+            <div class="bg-success bg-opacity-10 d-inline-block p-4 rounded-circle mb-4">
+                <i class="fas fa-check-circle fa-4x text-success"></i>
+            </div>
+            <h3 class="fw-bold text-dark">Tout est à jour !</h3>
+            <p class="text-muted mb-4">Toutes les commandes de cette zone sont déjà en cours de livraison.</p>
+            <a href="{{ path('livraison_zones') }}" class="btn btn-back px-5">
+                Retourner à la liste
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

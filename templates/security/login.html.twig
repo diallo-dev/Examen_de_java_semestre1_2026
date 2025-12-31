@@ -1,32 +1,151 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}Connexion - Brasil Burger{% endblock %}
+
 {% block body %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="text-center mb-4">
-                    <i class="fas fa-hamburger text-danger"></i><br>
-                    BRASIL BURGER<br>
-                    <small class="text-muted">Espace Gestionnaire</small>
-                </h3>
-                {% if error %}
-                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                {% endif %}
-                <form method="post">
-                    <div class="mb-3">
-                        <label class="form-label">Matricule</label>
-                        <input type="text" name="_username" value="{{ last_username }}" class="form-control" required autofocus>
+<style>
+    /* On change l'ambiance : plus chaleureux et sombre */
+    body {
+        background: radial-gradient(circle at center, #2d3436 0%, #000000 100%);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 450px;
+        padding: 15px;
+    }
+
+    .card {
+        background: #ffffff;
+        border: none;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+
+   
+    .brand-section {
+        background: #d63031;
+        padding: 40px 20px;
+        text-align: center;
+        color: white;
+    }
+
+    .brand-section i {
+        font-size: 4rem;
+        filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+    }
+
+    .brand-section h2 {
+        font-weight: 900;
+        margin-top: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    /* Les champs de saisie */
+    .form-label {
+        font-weight: 700;
+        color: #2d3436;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        border-radius: 15px;
+        padding: 12px 20px;
+        border: 2px solid #eee;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    
+    .form-control:focus {
+        border-color: #0984e3;
+        box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.1);
+    }
+
+    
+    .btn-submit {
+        background: #27ae60; /* Un beau vert forêt */
+        border: none;
+        color: white;
+        padding: 15px;
+        border-radius: 15px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: #2ecc71; /* Vert plus clair au survol */
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+    }
+
+    .alert-danger {
+        border-radius: 15px;
+        border: none;
+        font-weight: 600;
+        text-align: center;
+    }
+</style>
+
+<div class="login-container">
+    <div class="card">
+        <div class="brand-section">
+            <i class="fas fa-hamburger"></i>
+            <h2>BRASIL BURGER</h2>
+            <div class="badge bg-dark mt-2 px-3 py-2" style="font-size: 0.7rem; border-radius: 10px;">
+                ESPACE GESTIONNAIRE
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+            {% if error %}
+                <div class="alert alert-danger shadow-sm mb-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i> {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <form method="post">
+                <div class="mb-4">
+                    <label class="form-label">Matricule</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0" style="border-radius: 15px 0 0 15px;">
+                            <i class="fas fa-user text-muted"></i>
+                        </span>
+                        <input type="text" name="_username" value="{{ last_username }}" class="form-control border-0 bg-light" placeholder="Ex: M-001" style="border-radius: 0 15px 15px 0;" required autofocus>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Mot de passe</label>
-                        <input type="password" name="_password" class="form-control" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Mot de passe</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0" style="border-radius: 15px 0 0 15px;">
+                            <i class="fas fa-lock text-muted"></i>
+                        </span>
+                        <input type="password" name="_password" class="form-control border-0 bg-light" placeholder="••••••••" style="border-radius: 0 15px 15px 0;" required>
                     </div>
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                    <button type="submit" class="btn btn-danger w-100">
-                        <i class="fas fa-sign-in-alt"></i> Connexion
-                    </button>
-                </form>
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="btn-submit w-100 shadow-sm">
+                    <i class="fas fa-sign-in-alt me-2"></i> Accéder au tableau
+                </button>
+            </form>
+            
+            <div class="mt-4 text-center">
+                <a href="#" class="text-muted small text-decoration-none">
+                    <i class="fas fa-question-circle me-1"></i> Identifiants oubliés ?
+                </a>
             </div>
         </div>
     </div>

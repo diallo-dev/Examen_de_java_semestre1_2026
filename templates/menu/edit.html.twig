@@ -1,28 +1,183 @@
 {% extends 'base.html.twig' %}
-{% block title %}Modifier Menu{% endblock %}
-{% block body %}
-<h1 class="mb-4"><i class="fas fa-edit"></i> Modifier le Menu</h1>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                {{ form_start(form) }}
-                    {{ form_row(form.nom) }}
-                    {{ form_row(form.prixTotal) }}
-                    {{ form_row(form.urlImage) }}
-                    {{ form_row(form.description) }}
-                    {{ form_row(form.etatstock) }}
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-save"></i> Enregistrer
-                        </button>
-                        <a href="{{ path('menu_index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Annuler
-                        </a>
-                    </div>
-                {{ form_end(form) }}
+{% block title %}Modifier Menu | Brasil Burger{% endblock %}
+
+{% block body %}
+<style>
+    :root {
+        --bb-primary: #d63031;
+        --bb-dark: #2d3436;
+        --bb-success: #10b981; /* Vert pour Sauvegarder */
+        --bb-info: #4f46e5;    /* Bleu pour les titres et focus */
+        --bb-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    body { background-color: #f4f7f6; font-family: 'Inter', sans-serif; }
+
+    .page-header { margin-bottom: 2rem; }
+    
+    .page-title {
+        font-weight: 850;
+        color: var(--bb-dark);
+        letter-spacing: -1px;
+    }
+
+    /* Card du Formulaire */
+    .edit-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: var(--bb-shadow);
+        background: white;
+        overflow: hidden;
+    }
+
+    .card-accent {
+        height: 5px;
+        background: linear-gradient(90deg, var(--bb-info), var(--bb-success));
+    }
+
+    /* Style des champs de formulaire Symfony */
+    label {
+        font-weight: 600;
+        color: var(--bb-dark);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s;
+        margin-bottom: 1.2rem;
+    }
+
+    .form-control:focus {
+        border-color: var(--bb-info);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+
+    /* Boutons stylisés */
+    .btn-save {
+        background-color: var(--bb-success);
+        border: none;
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: all 0.3s;
+    }
+
+    .btn-save:hover {
+        background-color: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-cancel {
+        background-color: #f1f5f9;
+        border: none;
+        color: #64748b;
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cancel:hover {
+        background-color: #e2e8f0;
+        color: var(--bb-dark);
+    }
+
+    /* Preview Image Placeholder */
+    .image-preview-box {
+        background: #f8fafc;
+        border: 2px dashed #e2e8f0;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        color: #94a3b8;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <div class="page-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-edit text-info me-2"></i>Modifier le Menu
+                    </h1>
+                    <p class="text-muted mb-0">Mise à jour des informations et du stock</p>
+                </div>
+                <a href="{{ path('menu_index') }}" class="btn-cancel">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
             </div>
+
+            <div class="row g-4">
+                <div class="col-md-7">
+                    <div class="card edit-card">
+                        <div class="card-accent"></div>
+                        <div class="card-body p-4">
+                            {{ form_start(form) }}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {{ form_label(form.nom, "Nom du Menu") }}
+                                        {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Ex: Menu Brasil Max'}}) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_label(form.prixTotal, "Prix de vente (F)") }}
+                                        {{ form_widget(form.prixTotal, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_label(form.etatstock, "Disponibilité") }}
+                                        {{ form_widget(form.etatstock, {'attr': {'class': 'form-select'}}) }}
+                                    </div>
+                                    <div class="col-md-12">
+                                        {{ form_label(form.urlImage, "Lien de l'image") }}
+                                        {{ form_widget(form.urlImage, {'attr': {'class': 'form-control'}}) }}
+                                    </div>
+                                    <div class="col-md-12">
+                                        {{ form_label(form.description, "Description courte") }}
+                                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '3'}}) }}
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-top d-flex gap-2">
+                                    <button type="submit" class="btn-save shadow-sm">
+                                        <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                    </button>
+                                    <a href="{{ path('menu_index') }}" class="btn-cancel">
+                                        Annuler
+                                    </a>
+                                </div>
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card edit-card p-4">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-image text-muted me-2"></i>Aperçu visuel</h5>
+                        <div class="image-preview-box mb-4">
+                            <i class="fas fa-utensils fa-3x mb-3"></i>
+                            <p class="small mb-0">L'image du menu s'affichera sur l'application client après enregistrement.</p>
+                        </div>
+                        
+                        <div class="alert alert-warning border-0" style="border-radius: 12px; background-color: #fff9eb;">
+                            <h6 class="fw-bold text-warning"><i class="fas fa-lightbulb me-2"></i>Conseil PRO</h6>
+                            <p class="small mb-0 text-dark opacity-75">
+                                Assurez-vous que le prix total inclut bien les taxes. Un menu en "Rupture" n'apparaîtra plus dans la liste des commandes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
