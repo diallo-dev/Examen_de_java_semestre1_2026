@@ -79,7 +79,7 @@ main {
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, var(--brasil-red) 0%, #a71d2a 100%);
+    background: linear-gradient(135deg, var(--brasil-red) 0%, #220bd2 100%);
     border: none;
 }
 
